@@ -14,7 +14,12 @@
       "Bash(mv src/assets/logo-optimized.png src/assets/logo.png)",
       "Bash(cygpath -w \\\\\"C:/Users/sergi/Desktop/logo.png\\\\\")",
       "WebSearch",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "Bash(gh --version)",
+      "Bash(gh auth *)",
+      "Bash(git fetch *)",
+      "Bash(git ls-remote *)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
