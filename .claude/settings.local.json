@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"C:/Users/sergi/Desktop\" 2>&1 | head -50)",
+      "Bash(npm -v)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npm uninstall *)",
+      "Bash(npm run *)",
+      "Bash(cp \"C:/Users/sergi/Desktop/logo.png\" \"C:/Users/sergi/Desktop/DestinosTravel/src/assets/logo.png\" && ls -la \"C:/Users/sergi/Desktop/DestinosTravel/src/assets/\")",
+      "Bash(node -e \"console.log\\(process.version\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(rm src/assets/logo.png)",
+      "Bash(mv src/assets/logo-optimized.png src/assets/logo.png)",
+      "Bash(cygpath -w \\\\\"C:/Users/sergi/Desktop/logo.png\\\\\")",
+      "WebSearch"
+    ]
+  }
+}
