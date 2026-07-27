@@ -13,7 +13,8 @@
       "Bash(rm src/assets/logo.png)",
       "Bash(mv src/assets/logo-optimized.png src/assets/logo.png)",
       "Bash(cygpath -w \\\\\"C:/Users/sergi/Desktop/logo.png\\\\\")",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git status *)"
     ]
   }
 }
