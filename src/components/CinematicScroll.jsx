@@ -60,19 +60,16 @@ export function CinematicScroll() {
         >
           <div className="flex max-w-3xl flex-col items-start text-left">
             <div
-              className="font-label animate-blur-fade-up mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] tracking-[0.18em] text-[#E5E7EB]/60 uppercase"
+              className="font-label text-video-shadow animate-blur-fade-up mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] tracking-[0.18em] text-[#E5E7EB]/80 uppercase"
               style={{ animationDelay: '300ms' }}
             >
-              <span className="font-label animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase"
-              style={{ animationDelay: '380ms' }}>
+              <span className="flex items-center gap-2">
                 <Clock size={14} /> Atención 24/7
               </span>
-              <span className="font-label animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase"
-              style={{ animationDelay: '380ms' }}>
+              <span className="flex items-center gap-2">
                 <MapPinned size={14} /> Lima, Perú
               </span>
-              <span className="font-label animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase"
-              style={{ animationDelay: '380ms' }}>
+              <span className="flex items-center gap-2">
                 <ShieldCheck size={14} /> Seguro y discreto
               </span>
             </div>
@@ -80,28 +77,28 @@ export function CinematicScroll() {
             <div className="rule animate-draw-line mb-6 w-[120px]" />
 
             <p
-              className="font-label animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase"
+              className="font-label text-video-shadow animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase"
               style={{ animationDelay: '380ms' }}
             >
               DESTINOS TRAVEL / TRANSPORTE EJECUTIVO
             </p>
 
             <h1
-              className="font-display animate-blur-fade-up text-5xl leading-[1.02] tracking-[-0.01em] text-[#E5E7EB] sm:text-6xl md:text-7xl lg:text-8xl"
+              className="font-display text-video-shadow animate-blur-fade-up text-5xl leading-[1.02] tracking-[-0.01em] text-[#E5E7EB] sm:text-6xl md:text-7xl lg:text-8xl"
               style={{ animationDelay: '450ms' }}
             >
               <span className="text-[#FFD64B]">Trazado</span> antes de partir.
             </h1>
 
             <p
-              className="animate-blur-fade-up mt-5 max-w-lg text-base text-[#E5E7EB]/65 sm:text-lg"
+              className="text-video-shadow animate-blur-fade-up mt-5 max-w-lg text-base text-[#E5E7EB]/80 sm:text-lg"
               style={{ animationDelay: '560ms' }}
             >
               Todo viaje comienza con una ruta. Desplázate para ver el trazado tomar forma.
             </p>
 
             <div
-              className="font-label animate-blur-fade-up mt-8 flex items-center gap-3 text-[11px] tracking-[0.24em] text-[#E5E7EB]/40 uppercase"
+              className="font-label text-video-shadow animate-blur-fade-up mt-8 flex items-center gap-3 text-[11px] tracking-[0.24em] text-[#E5E7EB]/60 uppercase"
               style={{ animationDelay: '680ms' }}
             >
               Desplázate para trazar

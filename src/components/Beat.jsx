@@ -16,7 +16,7 @@ export function Beat({ id, kicker, heading, sub, specs, side = 'left', cta }) {
       className="relative z-10 flex h-screen items-center px-4 sm:px-6 md:px-12"
     >
       <div ref={ref} className={`flex w-full max-w-xl flex-col ${SIDE_STYLES[side]} ${side === 'center' ? 'max-w-2xl' : ''}`}>
-        <p className={cls('font-label mb-3 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase')}>
+        <p className={cls('font-label text-video-shadow mb-3 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase')}>
           {kicker}
         </p>
 
@@ -26,13 +26,13 @@ export function Beat({ id, kicker, heading, sub, specs, side = 'left', cta }) {
         />
 
         <h2
-          className={cls('font-display mb-4 text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl')}
+          className={cls('font-display text-video-shadow mb-4 text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl')}
           style={{ animationDelay: '200ms' }}
         >
           {heading}
         </h2>
 
-        <p className={cls('max-w-md text-base text-[#E5E7EB]/65 sm:text-lg')} style={{ animationDelay: '320ms' }}>
+        <p className={cls('text-video-shadow max-w-md text-base text-[#E5E7EB]/80 sm:text-lg')} style={{ animationDelay: '320ms' }}>
           {sub}
         </p>
 
@@ -44,7 +44,7 @@ export function Beat({ id, kicker, heading, sub, specs, side = 'left', cta }) {
             <div key={spec.label} className="flex flex-col sm:flex-row sm:items-center">
               {i > 0 && <div className="rule my-3 w-full sm:hidden" />}
               {i > 0 && <div className="rule-v mx-6 hidden h-8 self-center sm:block" />}
-              <div className="font-label text-[11px] tracking-[0.2em] text-[#E5E7EB]/70 uppercase">
+              <div className="font-label text-video-shadow text-[11px] tracking-[0.2em] text-[#E5E7EB]/80 uppercase">
                 <span className="text-[#FFD64B]">{spec.label}</span> · {spec.value}
               </div>
             </div>

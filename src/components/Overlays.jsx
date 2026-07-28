@@ -13,11 +13,8 @@ export function GridOverlay() {
 export function Scrim() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[2] backdrop-blur-sm"
-      style={{
-        maskImage: 'linear-gradient(to top, black 0%, transparent 42%)',
-        WebkitMaskImage: 'linear-gradient(to top, black 0%, transparent 42%)',
-      }}
+      className="pointer-events-none absolute inset-0 z-[2] backdrop-blur-[2px]"
+      style={{ background: 'linear-gradient(to top, rgba(11,13,14,0.55) 0%, rgba(11,13,14,0.4) 55%, rgba(11,13,14,0.15) 85%, transparent 100%)' }}
     />
   );
 }
