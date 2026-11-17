@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { ChevronsDown, Clock, MapPinned, ShieldCheck, ArrowRight, PhoneCall } from 'lucide-react';
+import { ChevronsDown, Clock, MapPinned, ShieldCheck, ArrowRight, CalendarCheck } from 'lucide-react';
 import { useScrollScrub } from '../hooks/useScrollScrub';
 import { GridOverlay, Scrim } from './Overlays';
 import { Beat } from './Beat';
@@ -172,11 +172,11 @@ export function CinematicScroll() {
               <ArrowRight size={16} />
             </button>
             <button
-              onClick={() => scrollToId('#contacto')}
+              onClick={() => scrollToId('#reservar')}
               className="font-label liquid-glass flex items-center justify-center gap-2 rounded-full px-7 py-3 tracking-[0.04em] text-[#E5E7EB]"
             >
-              Escribir ahora
-              <PhoneCall size={16} />
+              Reservar traslado
+              <CalendarCheck size={16} />
             </button>
           </>
         }

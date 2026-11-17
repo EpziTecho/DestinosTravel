@@ -1,6 +1,7 @@
 import { Navbar } from './components/Navbar';
 import { CinematicScroll } from './components/CinematicScroll';
 import { ServicesDetail } from './components/ServicesDetail';
+import { BookingSection } from './components/BookingSection';
 import { ClientsSection } from './components/ClientsSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
@@ -14,6 +15,7 @@ export default function App() {
       <Navbar />
       <CinematicScroll />
       <ServicesDetail />
+      <BookingSection />
       <ClientsSection />
       <ContactSection />
       <Footer />

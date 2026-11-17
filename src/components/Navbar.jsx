@@ -5,6 +5,7 @@ import stars from '../assets/logo-stars.png';
 
 const LINKS = [
   { label: 'Servicios', href: '#servicios' },
+  { label: 'Reservar', href: '#reservar' },
   { label: 'Nosotros', href: '#nosotros' },
   { label: 'Clientes', href: '#clientes' },
   { label: 'Contacto', href: '#contacto' },
@@ -34,7 +35,7 @@ export function Navbar() {
           </span>
         </a>
 
-        <div className="hidden items-center gap-8 lg:flex">
+        <div className="hidden items-center gap-6 lg:flex xl:gap-8">
           {LINKS.map((link, i) => (
             <button
               key={link.label}
@@ -48,11 +49,11 @@ export function Navbar() {
         </div>
 
         <button
-          onClick={() => scrollToId('#contacto')}
+          onClick={() => scrollToId('#reservar')}
           className="font-label liquid-glass animate-blur-fade-up hidden items-center gap-2 rounded-full px-5 py-2 text-sm tracking-[0.04em] text-[#FFD64B] lg:flex"
           style={{ animationDelay: '300ms' }}
         >
-          Trazar tu ruta
+          Reservar traslado
         </button>
 
         <button

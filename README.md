@@ -30,6 +30,7 @@ src/
     Overlays.jsx                grid, scrim (oscurecido sobre el video) y grano
     ProgressRail.jsx           barra de progreso lateral (solo desktop)
     ServicesDetail.jsx         grid de 5 tarjetas de servicio
+    BookingSection.jsx         reserva en línea en 3 pasos: envío directo (/api/reservas) o por WhatsApp
     ClientsSection.jsx         grid de clientes (placeholders con iniciales)
     ContactSection.jsx         email / teléfonos / ubicación
     Footer.jsx
@@ -40,6 +41,12 @@ src/
     useReveal.js                IntersectionObserver para animar cada sección al entrar en viewport
   config/
     socialLinks.js             número y mensaje de WhatsApp, URLs de redes sociales
+    bookingServices.js         tipos de traslado y límites (compartido por el formulario y la API)
+api/
+  reservas.js                  función de Vercel: valida la reserva, la envía por correo (Resend) y a Google Sheets
+  _lib/booking.js              validación y plantilla del correo
+docs/
+  reservas-backend.md          cómo configurar Resend, la Google Sheet y las variables de entorno
   assets/
     logo-mark.png               escudo del logo (fondo transparente real — el PNG original traía un cuadriculado falso "horneado" en los píxeles, se limpió con chroma-key)
     logo-stars.png               las 5 estrellas del logo original
@@ -59,6 +66,8 @@ public/
 | Logos de clientes | `src/components/ClientsSection.jsx` → array `CLIENTS`, campo `logo` (hoy `null` = insignia con iniciales; poner el `import` del PNG real cuando se tenga) |
 | Textos de Misión / Visión / Nosotros / Servicios | `src/components/CinematicScroll.jsx`, componentes `<Beat />` |
 | Video de fondo | `src/components/CinematicScroll.jsx` → `VIDEO_SRC` |
+| Tipos de traslado del formulario de reserva | `src/config/bookingServices.js` → `BOOKING_SERVICES` |
+| A dónde llegan las reservas (correo, Google Sheet) | Variables de entorno en Vercel — ver `docs/reservas-backend.md` |
 | Paleta de color | `src/index.css` → variables `--gold` `#FFD64B`, `--ink` `#0B0D0E`, `--graphite` `#1F2428`, `--silver` `#E5E7EB` |
 
 ## SEO
@@ -73,7 +82,7 @@ public/
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
+npm run dev      # http://localhost:5173 (también sirve /api; sin .env.local las reservas solo se imprimen en la terminal)
 npm run build    # genera dist/
 npm run preview  # sirve el build de producción localmente
 ```
