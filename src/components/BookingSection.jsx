@@ -1,11 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { serviceIcon } from './serviceIcons';
 import {
-  PlaneLanding,
-  PlaneTakeoff,
-  Landmark,
-  Briefcase,
-  Mountain,
-  MapPinned,
   Lock,
   Minus,
   Plus,
@@ -18,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
 import { WHATSAPP_NUMBER } from '../config/socialLinks';
-import { ROUTES } from '../lib/nav';
+import { ROUTES, BOOK_SERVICE_EVENT } from '../lib/nav';
 import {
   BOOKING_SERVICES,
   LIMITS,
@@ -32,15 +27,7 @@ import {
   plural,
 } from '../config/bookingServices';
 
-const ICONS = {
-  'transfer-in': PlaneLanding,
-  'transfer-out': PlaneTakeoff,
-  ejecutivo: Landmark,
-  tour: Mountain,
-  corporativo: Briefcase,
-  otro: MapPinned,
-};
-const SERVICES = BOOKING_SERVICES.map((s) => ({ ...s, icon: ICONS[s.id] ?? MapPinned }));
+const SERVICES = BOOKING_SERVICES.map((s) => ({ ...s, icon: serviceIcon(s.id) }));
 
 const EMPTY_FORM = {
   service: null,
@@ -222,6 +209,19 @@ export function BookingSection() {
     });
   }
 
+  // A "Reservar" button elsewhere on the page (service cards) picks the service for us.
+  useEffect(() => {
+    const onBook = (e) => {
+      const s = SERVICES.find((x) => x.id === e.detail);
+      if (!s) return;
+      if (status === 'sent') resetForm(); // start a new booking instead of editing the one just sent
+      setAttempted(null);
+      chooseService(s);
+    };
+    window.addEventListener(BOOK_SERVICE_EVENT, onBook);
+    return () => window.removeEventListener(BOOK_SERVICE_EVENT, onBook);
+  }, [status]);
+
   const missing = [];
   if (!service) missing.push('elegir el tipo de traslado');
   // Peru-time minimum, recomputed each render so it rolls over at midnight in Lima.
@@ -313,7 +313,7 @@ export function BookingSection() {
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-display text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl`}
           style={{ animationDelay: '200ms' }}
         >
-          Tu ruta, <span className="text-[#FFD64B]">lista en un minuto.</span>
+          Reserva tu traslado <span className="text-[#FFD64B]">en un minuto.</span>
         </h2>
         <p
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} mt-4 max-w-lg text-base text-[#E5E7EB]/60`}

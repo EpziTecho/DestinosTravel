@@ -36,6 +36,7 @@ export const TERMS_SECTIONS = [
       'Hacemos seguimiento de todos los vuelos. Si el vuelo se adelanta o se atrasa, la reserva sigue asegurada y habrá un conductor esperando al pasajero.',
       'El conductor espera cerca de la puerta 1 de salida en vuelos nacionales, o de la puerta 3 de salida en vuelos internacionales. Recomendamos mantener contacto con el operador o el conductor por WhatsApp o Telegram antes de salir con el equipaje.',
       'La tarifa incluye hasta 60 minutos de espera desde el aterrizaje. Pasado ese tiempo se aplican los recargos por tiempo de espera y estacionamiento indicados en la sección de recargos.',
+      'Nota: el seguimiento se hace con información pública: la web del aeropuerto y aplicaciones externas. Estas fuentes pueden tener errores y no mostrar a tiempo un retraso, una cancelación o un cambio de vuelo. Por eso pedimos al pasajero que nos avise de cualquier demora, cancelación o cambio de vuelo. Si no nos avisa, pueden aplicarse el recargo por tiempo de espera o la penalidad por no show.',
     ],
   },
   {
@@ -45,7 +46,8 @@ export const TERMS_SECTIONS = [
       {
         text: 'Sobre la tarifa acordada pueden aplicarse los siguientes recargos:',
         list: [
-          'Tiempo de espera adicional: S/ 30.00 por cada hora extra.',
+          'Tiempo de espera antes de iniciar el traslado: 15 minutos de cortesía desde la hora de recojo acordada. Pasado ese tiempo se cobra S/ 30.00 por hora de espera.',
+          'Tiempo de espera en el aeropuerto: incluye 60 minutos desde el aterrizaje. Pasado ese tiempo se cobra S/ 30.00 por hora de espera.',
           'Estacionamiento del aeropuerto: S/ 8.40 (precio referencial fijado por el aeropuerto; puede variar en cualquier momento).',
           'Horario nocturno: S/ 10.00.',
           'Navidad y Año Nuevo: 50% sobre la tarifa del servicio.',
@@ -55,6 +57,7 @@ export const TERMS_SECTIONS = [
           'Pago con tarjeta: 5.5% con tarjetas nacionales y 6.5% con tarjetas internacionales.',
         ],
       },
+      'El recargo por tiempo de espera se calcula por hora completa, aunque la espera dure menos. La empresa puede, a su criterio, cobrar solo una parte de la hora.',
       'Según la situación, la demora de un vuelo puede generar recargos por tiempo de espera y estacionamiento.',
     ],
   },

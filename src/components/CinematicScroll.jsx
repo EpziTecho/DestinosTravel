@@ -58,7 +58,7 @@ export function CinematicScroll() {
           ref={heroRef}
           className="absolute inset-0 z-10 flex flex-col items-start justify-end px-4 pb-20 sm:px-6 md:px-12 md:pb-28"
         >
-          <div className="flex max-w-3xl flex-col items-start text-left">
+          <div className="flex max-w-4xl flex-col items-start text-left">
             <div
               className="font-label text-video-shadow animate-blur-fade-up mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] tracking-[0.18em] text-[#E5E7EB]/80 uppercase"
               style={{ animationDelay: '300ms' }}
@@ -84,24 +84,45 @@ export function CinematicScroll() {
             </p>
 
             <h1
-              className="font-display text-video-shadow animate-blur-fade-up text-5xl leading-[1.02] tracking-[-0.01em] text-[#E5E7EB] sm:text-6xl md:text-7xl lg:text-8xl"
+              className="font-display text-video-shadow animate-blur-fade-up text-4xl leading-[1.05] tracking-[-0.01em] text-[#E5E7EB] sm:text-5xl md:text-6xl lg:text-7xl"
               style={{ animationDelay: '450ms' }}
             >
-              <span className="text-[#FFD64B]">Trazado</span> antes de partir.
+              Su visión dicta el destino, <span className="text-[#FFD64B]">nuestro protocolo asegura el trayecto.</span>
             </h1>
 
             <p
-              className="text-video-shadow animate-blur-fade-up mt-5 max-w-lg text-base text-[#E5E7EB]/80 sm:text-lg"
+              className="text-video-shadow animate-blur-fade-up mt-5 max-w-xl text-base text-[#E5E7EB]/80 sm:text-lg"
               style={{ animationDelay: '560ms' }}
             >
-              Todo viaje comienza con una ruta. Desplázate para ver el trazado tomar forma.
+              Transporte ejecutivo y diplomático en Lima: aeropuerto, empresas y viajes fuera de la ciudad. Conductores
+              profesionales, las 24 horas.
             </p>
+
+            <div
+              className="animate-blur-fade-up mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4"
+              style={{ animationDelay: '620ms' }}
+            >
+              <button
+                onClick={() => scrollToId('#reservar')}
+                className="font-label flex items-center justify-center gap-2 rounded-full bg-[#FFD64B] px-7 py-3 tracking-[0.04em] text-[#0B0D0E]"
+              >
+                Reservar traslado
+                <CalendarCheck size={16} />
+              </button>
+              <button
+                onClick={() => scrollToId('#servicios-detalle')}
+                className="font-label liquid-glass flex items-center justify-center gap-2 rounded-full px-7 py-3 tracking-[0.04em] text-[#E5E7EB]"
+              >
+                Ver servicios
+                <ArrowRight size={16} />
+              </button>
+            </div>
 
             <div
               className="font-label text-video-shadow animate-blur-fade-up mt-8 flex items-center gap-3 text-[11px] tracking-[0.24em] text-[#E5E7EB]/60 uppercase"
               style={{ animationDelay: '680ms' }}
             >
-              Desplázate para trazar
+              Desliza para conocernos
               <ChevronsDown size={16} className="animate-gentle-bounce" />
             </div>
           </div>
@@ -112,12 +133,12 @@ export function CinematicScroll() {
         id="mision"
         side="left"
         kicker="Misión"
-        heading="Un punto de partida."
+        heading="Puntuales, seguros y discretos."
         sub="Brindar un servicio de transporte ejecutivo seguro, puntual y confortable, destacándonos por la atención personalizada y el compromiso con la excelencia, garantizando confianza y discreción en cada trayecto."
         specs={[
-          { label: 'Servicio', value: '24/7' },
-          { label: 'Cobertura', value: 'Lima' },
-          { label: 'Estilo', value: 'ejecutivo' },
+          { label: 'Atención', value: '24/7' },
+          { label: 'Vuelos', value: 'con seguimiento' },
+          { label: 'Espera', value: '60 min incluidos' },
         ]}
       />
 
@@ -125,12 +146,12 @@ export function CinematicScroll() {
         id="vision"
         side="right"
         kicker="Visión"
-        heading="El rumbo trazado."
+        heading="La primera opción de quien llega al Perú."
         sub="Ser reconocidos como la empresa de transporte ejecutivo ideal en el Perú y la opción preferida para visitantes extranjeros que llegan a nuestro país."
         specs={[
-          { label: 'Meta', value: 'N.° 1 Perú' },
-          { label: 'Público', value: 'internacional' },
-          { label: 'Alcance', value: 'nacional' },
+          { label: 'Pago', value: 'al final del traslado' },
+          { label: 'Moneda', value: 'soles o dólares' },
+          { label: 'Comprobante', value: 'factura' },
         ]}
       />
 
@@ -138,12 +159,12 @@ export function CinematicScroll() {
         id="nosotros"
         side="left"
         kicker="Nosotros"
-        heading="La ruta con experiencia."
+        heading="Experiencia que se nota en cada trayecto."
         sub="Contamos con una sólida trayectoria en el transporte ejecutivo y diplomático. Un equipo de conductores profesionales y una flota moderna diseñada para brindar comodidad, seguridad y eficiencia."
         specs={[
+          { label: 'Experiencia', value: 'diplomática' },
+          { label: 'Conductores', value: 'de traje' },
           { label: 'Flota', value: 'moderna' },
-          { label: 'Conductores', value: 'profesionales' },
-          { label: 'Valores', value: 'confianza' },
         ]}
       />
 
@@ -153,14 +174,14 @@ export function CinematicScroll() {
         kicker="Servicios"
         heading={
           <>
-            Listo para <span className="text-[#FFD64B]">partir.</span>
+            ¿A dónde te <span className="text-[#FFD64B]">llevamos?</span>
           </>
         }
-        sub="Cinco servicios, un mismo estándar: puntualidad, seguridad y atención personalizada las 24 horas."
+        sub="Siete servicios, un mismo estándar: puntualidad, seguridad y atención personalizada las 24 horas."
         specs={[
-          { label: 'Servicios', value: '5' },
+          { label: 'Servicios', value: '7' },
           { label: 'Atención', value: '24/7' },
-          { label: 'Cobertura', value: 'Lima' },
+          { label: 'Cobertura', value: 'Lima y provincias' },
         ]}
         cta={
           <>

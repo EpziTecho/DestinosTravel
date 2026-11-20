@@ -29,7 +29,10 @@ src/
     Beat.jsx                   sección reutilizable para cada "beat" narrativo
     Overlays.jsx                grid, scrim (oscurecido sobre el video) y grano
     ProgressRail.jsx           barra de progreso lateral (solo desktop)
-    ServicesDetail.jsx         grid de 5 tarjetas de servicio
+    ServicesDetail.jsx         6 tarjetas de servicio (las mismas del formulario); "Reservar" abre el formulario con ese servicio
+    DiplomaticSection.jsx      experiencia diplomática: texto, fotos de src/assets/diplomatico/ y logos de clientes
+    GallerySection.jsx         galería con visor; fotos de src/assets/galeria/ (oculta si no hay fotos)
+    serviceIcons.js            icono de cada tipo de traslado
     BookingSection.jsx         reserva en línea en 3 pasos: envío directo (/api/reservas) o por WhatsApp
     EmpresasSection.jsx        beneficios para empresas y hoteles + "Pedir propuesta" (correo / WhatsApp)
     FaqSection.jsx             FAQ corta de la home (preguntas con featured: true)
@@ -41,9 +44,10 @@ src/
   content/
     faq.js                     textos de las preguntas frecuentes
     terms.js                   textos de los términos y condiciones (y fecha de actualización)
+    photos.js                  carga las fotos de diplomático y galería, y sus descripciones
   lib/
     nav.js                     rutas, navegación entre páginas y meta tags por página
-    ClientsSection.jsx         grid de clientes (placeholders con iniciales)
+    ClientsSection.jsx         grid de clientes (placeholders con iniciales), usado dentro de DiplomaticSection
     ContactSection.jsx         email / teléfonos / ubicación
     Footer.jsx
     SocialIcons.jsx            iconos FB/IG/WSP/TikTok (usa src/config/socialLinks.js)
@@ -83,7 +87,10 @@ public/
 | Términos y condiciones | `src/content/terms.js` (actualizar `TERMS_UPDATED` al cambiarlos) |
 | Razón social, RUC, dirección, teléfonos | `src/config/company.js` |
 | Anticipación mínima de reserva (hoy: 2 horas) | `src/config/bookingServices.js` → `MIN_NOTICE_MINUTES` |
-| Tipos de traslado del formulario de reserva | `src/config/bookingServices.js` → `BOOKING_SERVICES` |
+| Tipos de traslado (formulario y tarjetas de servicios) | `src/config/bookingServices.js` → `BOOKING_SERVICES` (`blurb` = texto de la tarjeta) |
+| Fotos de experiencia diplomática | copiar a `src/assets/diplomatico/` (se ordenan por nombre: `01-…`, `02-…`) |
+| Fotos de la galería | copiar a `src/assets/galeria/`; la sección aparece sola cuando hay fotos |
+| Descripción de cada foto | `src/content/photos.js` → `CAPTIONS` |
 | A dónde llegan las reservas (correo, Google Sheet) | Variables de entorno en Vercel — ver `docs/reservas-backend.md` |
 | Paleta de color | `src/index.css` → variables `--gold` `#FFD64B`, `--ink` `#0B0D0E`, `--graphite` `#1F2428`, `--silver` `#E5E7EB` |
 

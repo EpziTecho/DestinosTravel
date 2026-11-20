@@ -21,9 +21,9 @@ const CONTACT = [
     icon: MapPin,
     label: 'Ubicación',
     lines: ['Jr. Puerto Esperanza 419', 'San Martín de Porres, Lima'],
-    note: 'Cobertura nacional · Ver en el mapa',
-    href: COMPANY.mapsUrl,
-    external: true,
+    note: 'Cobertura nacional',
+    // Map link hidden for now; to bring it back: note 'Cobertura nacional · Ver en el mapa',
+    // href: COMPANY.mapsUrl, external: true.
   },
 ];
 
@@ -42,7 +42,7 @@ export function ContactSection() {
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-display text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl`}
           style={{ animationDelay: '200ms' }}
         >
-          Empecemos a <span className="text-[#FFD64B]">trazar</span> tu viaje.
+          Escríbenos. <span className="text-[#FFD64B]">Respondemos a cualquier hora.</span>
         </h2>
       </div>
 

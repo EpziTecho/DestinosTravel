@@ -22,6 +22,14 @@ export function goToSection(hash) {
   }
 }
 
+export const BOOK_SERVICE_EVENT = 'booking:service';
+
+/** Opens the booking form with a service already chosen (BookingSection listens for the event). */
+export function bookService(serviceId) {
+  window.dispatchEvent(new CustomEvent(BOOK_SERVICE_EVENT, { detail: serviceId }));
+  goToSection('#reservar');
+}
+
 /** Sets title, description and canonical URL for a sub-page. */
 export function usePageMeta({ title, description, path }) {
   useEffect(() => {

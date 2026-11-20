@@ -41,7 +41,8 @@ export const FAQ_GROUPS = [
       },
       {
         q: '¿Hacen seguimiento del vuelo?',
-        a: 'Siempre. Seguimos tu vuelo en todo momento para estar ahí cuando llegues.',
+        a: 'Siempre. Seguimos tu vuelo por la web del aeropuerto y aplicaciones externas. Como estas fuentes a veces no muestran a tiempo un retraso o una cancelación, avísanos si tu vuelo cambia, se demora o se cancela. Así evitas recargos por espera o la penalidad por no show.',
+        terms: true,
       },
       {
         q: '¿Dónde me espera el conductor?',
@@ -49,7 +50,7 @@ export const FAQ_GROUPS = [
       },
       {
         q: '¿Cuánto tiempo de espera está incluido?',
-        a: 'Hasta 60 minutos desde el aterrizaje. Después se aplican recargos por tiempo de espera y estacionamiento.',
+        a: 'En el aeropuerto, hasta 60 minutos desde el aterrizaje. En los demás recojos, 15 minutos de cortesía desde la hora acordada. Pasado ese tiempo, la espera cuesta S/ 30.00 por hora (más el estacionamiento, si es en el aeropuerto).',
         terms: true,
       },
     ],
