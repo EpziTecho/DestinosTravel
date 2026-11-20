@@ -5,14 +5,24 @@ import { GridOverlay, Scrim } from './Overlays';
 import { Beat } from './Beat';
 import { ProgressRail } from './ProgressRail';
 
-const VIDEO_SRC = 'https://zxdefgavgwfxastwmmjm.supabase.co/storage/v1/object/public/assets/graven.mp4';
+// Served from our own domain with a hashed file name, so browsers cache it for good.
+import VIDEO_SRC from '../assets/hero.mp4';
+// First frame of the video: shown instantly while the video loads.
+import POSTER_SRC from '../assets/hero-poster.webp';
 
 function scrollToId(id) {
   document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
 }
 
-const HERO_FADE_START = 0.02;
-const HERO_FADE_END = 0.14;
+// Fraction of the hero's scroll over which the intro text fades out.
+const HERO_FADE_START = 0.03;
+const HERO_FADE_END = 0.17;
+
+// Phones loop the video instead of scrubbing it: seeking on every scroll frame is
+// what makes mobile browsers stutter.
+const LOOP_VIDEO = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+// On phones, rest this long on the last frame before playing again (null = play once and stay).
+const LOOP_PAUSE_MS = null;
 
 export function CinematicScroll() {
   const containerRef = useRef(null);
@@ -31,24 +41,24 @@ export function CinematicScroll() {
       const opacity = 1 - t;
       hero.style.opacity = String(opacity);
       hero.style.transform = `translateY(${-t * 60}px)`;
-      hero.style.filter = `blur(${t * 8}px)`;
       hero.style.pointerEvents = opacity < 0.05 ? 'none' : 'auto';
     }
   }, []);
 
-  useScrollScrub(containerRef, videoRef, handleProgress);
+  useScrollScrub(containerRef, videoRef, handleProgress, { scrub: !LOOP_VIDEO, loopPauseMs: LOOP_PAUSE_MS });
 
+  // Height comes from the content: one screen for the hero + the four shorter beats.
   return (
-    <section ref={containerRef} id="top" className="relative h-[500vh]">
+    <section ref={containerRef} id="top" className="relative">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <video
           ref={videoRef}
           className="absolute inset-0 z-0 h-full w-full object-cover"
           src={VIDEO_SRC}
+          poster={POSTER_SRC}
           muted
           playsInline
           preload="auto"
-          crossOrigin="anonymous"
         />
 
         <GridOverlay />

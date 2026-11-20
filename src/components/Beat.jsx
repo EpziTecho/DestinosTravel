@@ -13,7 +13,7 @@ export function Beat({ id, kicker, heading, sub, specs, side = 'left', cta }) {
   return (
     <section
       id={id}
-      className="relative z-10 flex h-screen items-center px-4 sm:px-6 md:px-12"
+      className="relative z-10 flex min-h-[65vh] items-center px-4 py-12 sm:px-6 md:px-12"
     >
       <div ref={ref} className={`flex w-full max-w-xl flex-col ${SIDE_STYLES[side]} ${side === 'center' ? 'max-w-2xl' : ''}`}>
         <p className={cls('font-label text-video-shadow mb-3 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase')}>

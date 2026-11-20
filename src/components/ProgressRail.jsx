@@ -1,10 +1,11 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 const BEATS = [
-  { max: 0.06, label: 'El punto de partida' },
-  { max: 0.28, label: '01 · La misión' },
-  { max: 0.52, label: '02 · La visión' },
-  { max: 0.76, label: '03 · Nosotros' },
+  // Switch points between beats (progress 0–1 through the hero section).
+  { max: 0.12, label: 'Inicio' },
+  { max: 0.44, label: '01 · Misión' },
+  { max: 0.69, label: '02 · Visión' },
+  { max: 0.94, label: '03 · Nosotros' },
   { max: 1.01, label: '04 · Servicios' },
 ];
 
@@ -37,7 +38,7 @@ export const ProgressRail = forwardRef(function ProgressRail(_, ref) {
         ref={labelRef}
         className="font-label max-w-[10rem] rotate-0 text-right text-[10px] tracking-[0.25em] text-[#E5E7EB]/45 uppercase [writing-mode:vertical-rl]"
       >
-        El punto de partida
+        Inicio
       </span>
     </div>
   );

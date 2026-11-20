@@ -25,7 +25,7 @@ src/
   index.css                    tokens de color, clases utilitarias (.liquid-glass, .rule, .font-label, .font-display...)
   components/
     Navbar.jsx                 logo + nav + CTA + menú mobile
-    CinematicScroll.jsx        contenedor 500vh: video pinned + hero + 4 beats (Misión/Visión/Nosotros/Servicios)
+    CinematicScroll.jsx        hero con video fijo + 4 beats (Misión/Visión/Nosotros/Servicios), ~3,6 pantallas de alto
     Beat.jsx                   sección reutilizable para cada "beat" narrativo
     Overlays.jsx                grid, scrim (oscurecido sobre el video) y grano
     ProgressRail.jsx           barra de progreso lateral (solo desktop)
@@ -82,7 +82,7 @@ public/
 | URLs de Facebook / Instagram / TikTok | `src/config/socialLinks.js` → `SOCIAL_LINKS` (hoy son `'#'` placeholders) |
 | Logos de clientes | `src/components/ClientsSection.jsx` → array `CLIENTS`, campo `logo` (hoy `null` = insignia con iniciales; poner el `import` del PNG real cuando se tenga) |
 | Textos de Misión / Visión / Nosotros / Servicios | `src/components/CinematicScroll.jsx`, componentes `<Beat />` |
-| Video de fondo | `src/components/CinematicScroll.jsx` → `VIDEO_SRC` |
+| Video de fondo | `src/assets/hero.mp4` + `src/assets/hero-poster.webp` (primer cuadro, se ve mientras carga). En celulares el video se reproduce en bucle; en computadoras avanza con el scroll |
 | Preguntas frecuentes (y cuáles salen en la home) | `src/content/faq.js` |
 | Términos y condiciones | `src/content/terms.js` (actualizar `TERMS_UPDATED` al cambiarlos) |
 | Razón social, RUC, dirección, teléfonos | `src/config/company.js` |

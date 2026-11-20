@@ -13,7 +13,7 @@ export function GridOverlay() {
 export function Scrim() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[2] backdrop-blur-[2px]"
+      className="pointer-events-none absolute inset-0 z-[2]"
       style={{ background: 'linear-gradient(to top, rgba(11,13,14,0.55) 0%, rgba(11,13,14,0.4) 55%, rgba(11,13,14,0.15) 85%, transparent 100%)' }}
     />
   );
@@ -25,7 +25,8 @@ const GRAIN_SVG =
 export function Grain() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-30 opacity-5 mix-blend-overlay"
+      // Desktop only: a full-screen blended layer is costly on phones and barely visible there.
+      className="pointer-events-none fixed inset-0 z-30 hidden opacity-5 mix-blend-overlay md:block"
       style={{ backgroundImage: `url("${GRAIN_SVG}")` }}
     />
   );
