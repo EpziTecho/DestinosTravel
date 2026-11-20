@@ -10,6 +10,8 @@ import {
   plural,
   peruDateISO,
   minPickupDate,
+  isTooSoon,
+  MIN_NOTICE_MINUTES,
 } from '../../src/config/bookingServices.js';
 
 const MAX_LEN = { from: 200, to: 200, flight: 20, name: 100, email: 150, phone: 30, notes: 1000 };
@@ -34,6 +36,9 @@ export function validateBooking(body) {
   const time = str(b.time);
   const [hh, mm] = time.split(':').map(Number);
   if (!/^\d{2}:\d{2}$/.test(time) || hh > 23 || mm > 59) errors.push('Hora no válida.');
+  else if (!errors.length && isTooSoon(date, time)) {
+    errors.push(`Reserva con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación.`);
+  }
 
   const int = (v, { min, max }, label) => {
     const n = Number(v);

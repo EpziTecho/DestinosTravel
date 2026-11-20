@@ -18,12 +18,15 @@ import {
 } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
 import { WHATSAPP_NUMBER } from '../config/socialLinks';
+import { ROUTES } from '../lib/nav';
 import {
   BOOKING_SERVICES,
   LIMITS,
   EMAIL_RE,
   isValidPhone,
   minPickupDate,
+  isTooSoon,
+  MIN_NOTICE_MINUTES,
   serviceName,
   formatDate,
   plural,
@@ -226,6 +229,9 @@ export function BookingSection() {
   const tooSoon = Boolean(form.date) && form.date < minDate;
   if (!form.date || !time) missing.push('el día y la hora');
   else if (tooSoon) missing.push('un día de recojo que no haya pasado');
+  // Same rule for the time: at least MIN_NOTICE_MINUTES from now (Peru time).
+  const timeTooSoon = !tooSoon && Boolean(form.date) && Boolean(time) && isTooSoon(form.date, time);
+  if (timeTooSoon) missing.push(`un horario con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación`);
   if (!form.from.trim() || !form.to.trim()) missing.push('la ruta');
   const ready = missing.length === 0;
 
@@ -384,7 +390,8 @@ export function BookingSection() {
                     value={form.hour}
                     onChange={(e) => set('hour')(digits(e.target.value, 2))}
                     onBlur={() => set('hour')(normalizeTimePart(form.hour, 23))}
-                    className={`${inputClass} text-center tabular-nums`}
+                    aria-describedby="booking-time-help"
+                    className={`${inputClass} text-center tabular-nums ${timeTooSoon ? 'border-[#FFD64B]/70' : ''}`}
                   />
                   <span className="text-lg text-[#E5E7EB]/50">:</span>
                   <input
@@ -396,7 +403,8 @@ export function BookingSection() {
                     value={form.minute}
                     onChange={(e) => set('minute')(digits(e.target.value, 2))}
                     onBlur={() => set('minute')(normalizeTimePart(form.minute, 59))}
-                    className={`${inputClass} text-center tabular-nums`}
+                    aria-describedby="booking-time-help"
+                    className={`${inputClass} text-center tabular-nums ${timeTooSoon ? 'border-[#FFD64B]/70' : ''}`}
                   />
                   <datalist id="booking-hours">
                     {HOURS.map((h) => (
@@ -409,6 +417,14 @@ export function BookingSection() {
                     ))}
                   </datalist>
                 </div>
+                <span
+                  id="booking-time-help"
+                  className={`text-xs ${timeTooSoon ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/40'}`}
+                >
+                  {timeTooSoon
+                    ? `Reserva con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación (hora de Perú).`
+                    : `Mínimo ${MIN_NOTICE_MINUTES / 60} horas de anticipación.`}
+                </span>
               </Field>
               <Stepper label="Pasajeros" value={form.passengers} {...LIMITS.passengers} onChange={set('passengers')} />
               <Stepper label="Maletas" value={form.bags} {...LIMITS.bags} onChange={set('bags')} />
@@ -547,6 +563,13 @@ export function BookingSection() {
 
                 <p className={`mt-3 text-center text-sm ${hintAlert ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/45'}`} aria-live="polite">
                   {hint}
+                </p>
+                <p className="mt-2 text-center text-xs text-[#E5E7EB]/35">
+                  Al reservar aceptas los{' '}
+                  <a href={ROUTES.terms} className="text-[#E5E7EB]/60 underline underline-offset-2 hover:text-[#FFD64B]">
+                    Términos y condiciones
+                  </a>
+                  .
                 </p>
               </>
             )}

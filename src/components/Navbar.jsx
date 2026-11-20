@@ -2,18 +2,16 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import logo from '../assets/logo-mark.png';
 import stars from '../assets/logo-stars.png';
+import { goToSection } from '../lib/nav';
 
 const LINKS = [
   { label: 'Servicios', href: '#servicios' },
   { label: 'Reservar', href: '#reservar' },
   { label: 'Nosotros', href: '#nosotros' },
-  { label: 'Clientes', href: '#clientes' },
+  { label: 'Empresas', href: '#empresas' },
+  { label: 'Preguntas', href: '#preguntas' },
   { label: 'Contacto', href: '#contacto' },
 ];
-
-function scrollToId(id) {
-  document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
-}
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -22,7 +20,7 @@ export function Navbar() {
     <>
       <nav className="fixed top-0 z-50 flex w-full items-center justify-between px-4 py-4 backdrop-blur-md sm:px-6 md:px-12 md:py-6">
         <a
-          href="#top"
+          href="/"
           className="animate-blur-fade-up flex items-center gap-3"
           style={{ animationDelay: '0ms' }}
         >
@@ -39,7 +37,7 @@ export function Navbar() {
           {LINKS.map((link, i) => (
             <button
               key={link.label}
-              onClick={() => scrollToId(link.href)}
+              onClick={() => goToSection(link.href)}
               className="font-label animate-blur-fade-up text-sm tracking-[0.08em] text-[#E5E7EB]/70 transition-colors hover:text-[#FFD64B]"
               style={{ animationDelay: `${100 + i * 50}ms` }}
             >
@@ -49,7 +47,7 @@ export function Navbar() {
         </div>
 
         <button
-          onClick={() => scrollToId('#reservar')}
+          onClick={() => goToSection('#reservar')}
           className="font-label liquid-glass animate-blur-fade-up hidden items-center gap-2 rounded-full px-5 py-2 text-sm tracking-[0.04em] text-[#FFD64B] lg:flex"
           style={{ animationDelay: '300ms' }}
         >
@@ -75,7 +73,7 @@ export function Navbar() {
 
       <div
         className={`fixed inset-x-0 top-0 z-40 flex flex-col items-center justify-center gap-6 overflow-hidden bg-[#0B0D0E]/95 pt-20 backdrop-blur transition-all duration-500 lg:hidden ${
-          open ? 'h-72 opacity-100' : 'pointer-events-none h-0 opacity-0'
+          open ? 'h-[26rem] opacity-100' : 'pointer-events-none h-0 opacity-0'
         }`}
       >
         {LINKS.map((link) => (
@@ -83,7 +81,7 @@ export function Navbar() {
             key={link.label}
             onClick={() => {
               setOpen(false);
-              scrollToId(link.href);
+              goToSection(link.href);
             }}
             className="font-label text-sm tracking-[0.2em] text-[#E5E7EB]/80 uppercase hover:text-[#FFD64B]"
           >

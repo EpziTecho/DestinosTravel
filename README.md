@@ -31,6 +31,18 @@ src/
     ProgressRail.jsx           barra de progreso lateral (solo desktop)
     ServicesDetail.jsx         grid de 5 tarjetas de servicio
     BookingSection.jsx         reserva en línea en 3 pasos: envío directo (/api/reservas) o por WhatsApp
+    EmpresasSection.jsx        beneficios para empresas y hoteles + "Pedir propuesta" (correo / WhatsApp)
+    FaqSection.jsx             FAQ corta de la home (preguntas con featured: true)
+    FaqList.jsx                acordeón de preguntas (reutilizado en la home y en /preguntas-frecuentes)
+    PageShell.jsx              layout de las páginas internas (navbar, título, footer)
+  pages/
+    FaqPage.jsx                /preguntas-frecuentes — todas las preguntas por tema (+ JSON-LD FAQPage)
+    TermsPage.jsx              /terminos — términos y condiciones
+  content/
+    faq.js                     textos de las preguntas frecuentes
+    terms.js                   textos de los términos y condiciones (y fecha de actualización)
+  lib/
+    nav.js                     rutas, navegación entre páginas y meta tags por página
     ClientsSection.jsx         grid de clientes (placeholders con iniciales)
     ContactSection.jsx         email / teléfonos / ubicación
     Footer.jsx
@@ -41,7 +53,8 @@ src/
     useReveal.js                IntersectionObserver para animar cada sección al entrar en viewport
   config/
     socialLinks.js             número y mensaje de WhatsApp, URLs de redes sociales
-    bookingServices.js         tipos de traslado y límites (compartido por el formulario y la API)
+    bookingServices.js         tipos de traslado, límites y anticipación mínima (compartido por el formulario y la API)
+    company.js                 razón social, RUC, dirección, correo y teléfonos
 api/
   reservas.js                  función de Vercel: valida la reserva, la envía por correo (Resend) y a Google Sheets
   _lib/booking.js              validación y plantilla del correo
@@ -66,6 +79,10 @@ public/
 | Logos de clientes | `src/components/ClientsSection.jsx` → array `CLIENTS`, campo `logo` (hoy `null` = insignia con iniciales; poner el `import` del PNG real cuando se tenga) |
 | Textos de Misión / Visión / Nosotros / Servicios | `src/components/CinematicScroll.jsx`, componentes `<Beat />` |
 | Video de fondo | `src/components/CinematicScroll.jsx` → `VIDEO_SRC` |
+| Preguntas frecuentes (y cuáles salen en la home) | `src/content/faq.js` |
+| Términos y condiciones | `src/content/terms.js` (actualizar `TERMS_UPDATED` al cambiarlos) |
+| Razón social, RUC, dirección, teléfonos | `src/config/company.js` |
+| Anticipación mínima de reserva (hoy: 2 horas) | `src/config/bookingServices.js` → `MIN_NOTICE_MINUTES` |
 | Tipos de traslado del formulario de reserva | `src/config/bookingServices.js` → `BOOKING_SERVICES` |
 | A dónde llegan las reservas (correo, Google Sheet) | Variables de entorno en Vercel — ver `docs/reservas-backend.md` |
 | Paleta de color | `src/index.css` → variables `--gold` `#FFD64B`, `--ink` `#0B0D0E`, `--graphite` `#1F2428`, `--silver` `#E5E7EB` |
@@ -91,4 +108,5 @@ npm run preview  # sirve el build de producción localmente
 
 - Reemplazar los placeholders `'#'` de Facebook/Instagram/TikTok en `socialLinks.js` cuando existan esas cuentas
 - Reemplazar las insignias de iniciales en `ClientsSection.jsx` por los logos PNG reales de cada cliente
-- Si se compra un dominio propio (en vez de `destinos-travel5.vercel.app`), actualizar la URL en: `index.html` (canonical, Open Graph, Twitter, JSON-LD), `public/robots.txt`, `public/sitemap.xml`, y conectar el dominio en Vercel → Settings → Domains
+- Las páginas internas (`/preguntas-frecuentes`, `/terminos`) funcionan gracias a `vercel.json` (rewrite a `index.html`)
+- Si se compra un dominio propio (en vez de `destinos-travel5.vercel.app`), actualizar la URL en: `index.html` (canonical, Open Graph, Twitter, JSON-LD), `src/lib/nav.js` (`SITE`), `public/robots.txt`, `public/sitemap.xml`, y conectar el dominio en Vercel → Settings → Domains

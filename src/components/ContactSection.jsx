@@ -1,27 +1,29 @@
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
+import { COMPANY, telHref } from '../config/company';
 
 const CONTACT = [
   {
     icon: Mail,
     label: 'Email',
-    lines: ['destinostravel5eirl@gmail.com'],
+    lines: [COMPANY.email],
     note: 'Escríbenos para solicitar tu servicio',
-    href: 'mailto:destinostravel5eirl@gmail.com',
+    href: `mailto:${COMPANY.email}`,
   },
   {
     icon: Phone,
     label: 'Teléfonos',
-    lines: ['+51 942 665 919', '+51 993 523 742'],
+    lines: COMPANY.phones,
     note: 'Atención 24/7 todos los días',
-    href: 'tel:+51942665919',
+    href: telHref(COMPANY.phones[0]),
   },
   {
     icon: MapPin,
     label: 'Ubicación',
-    lines: ['Lima, Perú'],
-    note: 'Cobertura nacional',
-    href: null,
+    lines: ['Jr. Puerto Esperanza 419', 'San Martín de Porres, Lima'],
+    note: 'Cobertura nacional · Ver en el mapa',
+    href: COMPANY.mapsUrl,
+    external: true,
   },
 ];
 
@@ -52,6 +54,7 @@ export function ContactSection() {
             <Wrapper
               key={item.label}
               href={item.href ?? undefined}
+              {...(item.external ? { target: '_blank', rel: 'noreferrer' } : {})}
               className={`${gridRevealed ? 'animate-blur-fade-up' : 'opacity-0'} flex flex-col gap-3 px-0 py-8 sm:px-8 sm:first:pl-0 sm:last:pr-0`}
               style={{ animationDelay: `${i * 120}ms` }}
             >
@@ -71,7 +74,7 @@ export function ContactSection() {
       </div>
 
       <a
-        href="mailto:destinostravel5eirl@gmail.com"
+        href={`mailto:${COMPANY.email}`}
         className="font-label mt-12 inline-flex items-center gap-2 rounded-full bg-[#FFD64B] px-7 py-3 tracking-[0.04em] text-[#0B0D0E]"
       >
         Solicitar tu servicio

@@ -30,6 +30,15 @@ export function peruDateISO(days = 0) {
 
 export const minPickupDate = () => peruDateISO(MIN_DAYS_AHEAD);
 
+// Minimum notice between booking and pickup.
+export const MIN_NOTICE_MINUTES = 120;
+
+/** True when a Peru-time date (YYYY-MM-DD) + time (HH:MM) is sooner than the minimum notice. */
+export function isTooSoon(date, time) {
+  const pickup = Date.parse(`${date}T${time}:00-05:00`);
+  return Number.isFinite(pickup) && pickup < Date.now() + MIN_NOTICE_MINUTES * 60000;
+}
+
 export const serviceName =(s) => (s.tag ? `${s.label} (${s.tag})` : s.label);
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
