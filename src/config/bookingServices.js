@@ -4,13 +4,47 @@
 export const AIRPORT = 'Aeropuerto Jorge Chávez';
 
 // `from` / `to` fix that end of the route to the airport (the form locks the field).
+// `blurb` is the description on the service cards (src/components/ServicesDetail.jsx).
 export const BOOKING_SERVICES = [
-  { id: 'transfer-in', label: 'Recojo en el aeropuerto', tag: 'Transfer IN', from: AIRPORT },
-  { id: 'transfer-out', label: 'Llevada al aeropuerto', tag: 'Transfer OUT', to: AIRPORT },
-  { id: 'ejecutivo', label: 'Ejecutivo' },
-  { id: 'tour', label: 'Tour o viaje fuera de Lima' },
-  { id: 'corporativo', label: 'Corporativo por horas' },
-  { id: 'otro', label: 'Otros traslados' },
+  {
+    id: 'transfer-in',
+    label: 'Recojo en el aeropuerto',
+    tag: 'Transfer IN',
+    from: AIRPORT,
+    blurb: 'Te esperamos a la salida, con seguimiento de tu vuelo y 60 minutos de espera incluidos.',
+  },
+  {
+    id: 'transfer-out',
+    label: 'Llevada al aeropuerto',
+    tag: 'Transfer OUT',
+    to: AIRPORT,
+    blurb: 'Te recogemos donde estés y te dejamos en el aeropuerto a tiempo para tu vuelo.',
+  },
+  {
+    id: 'ejecutivo',
+    label: 'Ejecutivo',
+    blurb: 'Traslados ejecutivos y diplomáticos con protocolo, puntualidad y total discreción.',
+  },
+  {
+    id: 'tour',
+    label: 'Tour o viaje fuera de Lima',
+    blurb: 'Playas, Paracas, Caral, Chancay, Huaral, Trujillo o el destino que elijas.',
+  },
+  {
+    id: 'corporativo',
+    label: 'Corporativo por horas',
+    blurb: 'Un conductor a disposición de tu empresa, desde 3 horas, en distritos colindantes.',
+  },
+  {
+    id: 'bodas',
+    label: 'Bodas',
+    blurb: 'Traslados elegantes y exclusivos para los novios y sus invitados, en un día inolvidable.',
+  },
+  {
+    id: 'otro',
+    label: 'Otros traslados',
+    blurb: 'Cualquier otro traslado que necesites, coordinado a tu medida.',
+  },
 ];
 
 export const LIMITS = {
@@ -29,6 +63,15 @@ export function peruDateISO(days = 0) {
 }
 
 export const minPickupDate = () => peruDateISO(MIN_DAYS_AHEAD);
+
+// Minimum notice between booking and pickup.
+export const MIN_NOTICE_MINUTES = 120;
+
+/** True when a Peru-time date (YYYY-MM-DD) + time (HH:MM) is sooner than the minimum notice. */
+export function isTooSoon(date, time) {
+  const pickup = Date.parse(`${date}T${time}:00-05:00`);
+  return Number.isFinite(pickup) && pickup < Date.now() + MIN_NOTICE_MINUTES * 60000;
+}
 
 export const serviceName =(s) => (s.tag ? `${s.label} (${s.tag})` : s.label);
 

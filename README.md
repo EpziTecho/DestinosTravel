@@ -25,13 +25,29 @@ src/
   index.css                    tokens de color, clases utilitarias (.liquid-glass, .rule, .font-label, .font-display...)
   components/
     Navbar.jsx                 logo + nav + CTA + menú mobile
-    CinematicScroll.jsx        contenedor 500vh: video pinned + hero + 4 beats (Misión/Visión/Nosotros/Servicios)
+    CinematicScroll.jsx        hero con video fijo + 4 beats (Misión/Visión/Nosotros/Servicios), ~3,6 pantallas de alto
     Beat.jsx                   sección reutilizable para cada "beat" narrativo
     Overlays.jsx                grid, scrim (oscurecido sobre el video) y grano
     ProgressRail.jsx           barra de progreso lateral (solo desktop)
-    ServicesDetail.jsx         grid de 5 tarjetas de servicio
+    ServicesDetail.jsx         6 tarjetas de servicio (las mismas del formulario); "Reservar" abre el formulario con ese servicio
+    DiplomaticSection.jsx      experiencia diplomática: texto, fotos de src/assets/diplomatico/ y logos de clientes
+    GallerySection.jsx         galería con visor; fotos de src/assets/galeria/ (oculta si no hay fotos)
+    serviceIcons.js            icono de cada tipo de traslado
     BookingSection.jsx         reserva en línea en 3 pasos: envío directo (/api/reservas) o por WhatsApp
-    ClientsSection.jsx         grid de clientes (placeholders con iniciales)
+    EmpresasSection.jsx        beneficios para empresas y hoteles + "Pedir propuesta" (correo / WhatsApp)
+    FaqSection.jsx             FAQ corta de la home (preguntas con featured: true)
+    FaqList.jsx                acordeón de preguntas (reutilizado en la home y en /preguntas-frecuentes)
+    PageShell.jsx              layout de las páginas internas (navbar, título, footer)
+  pages/
+    FaqPage.jsx                /preguntas-frecuentes — todas las preguntas por tema (+ JSON-LD FAQPage)
+    TermsPage.jsx              /terminos — términos y condiciones
+  content/
+    faq.js                     textos de las preguntas frecuentes
+    terms.js                   textos de los términos y condiciones (y fecha de actualización)
+    photos.js                  carga las fotos de diplomático y galería, y sus descripciones
+  lib/
+    nav.js                     rutas, navegación entre páginas y meta tags por página
+    ClientsSection.jsx         grid de clientes (placeholders con iniciales), usado dentro de DiplomaticSection
     ContactSection.jsx         email / teléfonos / ubicación
     Footer.jsx
     SocialIcons.jsx            iconos FB/IG/WSP/TikTok (usa src/config/socialLinks.js)
@@ -41,18 +57,19 @@ src/
     useReveal.js                IntersectionObserver para animar cada sección al entrar en viewport
   config/
     socialLinks.js             número y mensaje de WhatsApp, URLs de redes sociales
-    bookingServices.js         tipos de traslado y límites (compartido por el formulario y la API)
+    bookingServices.js         tipos de traslado, límites y anticipación mínima (compartido por el formulario y la API)
+    company.js                 razón social, RUC, dirección, correo y teléfonos
 api/
   reservas.js                  función de Vercel: valida la reserva, la envía por correo (Resend) y a Google Sheets
   _lib/booking.js              validación y plantilla del correo
 docs/
   reservas-backend.md          cómo configurar Resend, la Google Sheet y las variables de entorno
   assets/
-    logo-mark.png               escudo del logo (fondo transparente real — el PNG original traía un cuadriculado falso "horneado" en los píxeles, se limpió con chroma-key)
-    logo-stars.png               las 5 estrellas del logo original
+    logo-horizontal.webp        logo completo (escudo + nombre + estrellas), en la barra superior y el pie
 public/
-  og-image.jpg                imagen de vista previa para redes sociales (1200×630)
+  og-image.jpg                imagen de vista previa para redes sociales (1200×630), hecha con el logo completo
   favicon.png                 favicon de marca (el escudo)
+  apple-touch-icon.png        ícono al guardar la web en la pantalla de inicio del celular
   robots.txt / sitemap.xml    SEO
 ```
 
@@ -65,8 +82,15 @@ public/
 | URLs de Facebook / Instagram / TikTok | `src/config/socialLinks.js` → `SOCIAL_LINKS` (hoy son `'#'` placeholders) |
 | Logos de clientes | `src/components/ClientsSection.jsx` → array `CLIENTS`, campo `logo` (hoy `null` = insignia con iniciales; poner el `import` del PNG real cuando se tenga) |
 | Textos de Misión / Visión / Nosotros / Servicios | `src/components/CinematicScroll.jsx`, componentes `<Beat />` |
-| Video de fondo | `src/components/CinematicScroll.jsx` → `VIDEO_SRC` |
-| Tipos de traslado del formulario de reserva | `src/config/bookingServices.js` → `BOOKING_SERVICES` |
+| Video de fondo | `src/assets/hero.mp4` + `src/assets/hero-poster.webp` (primer cuadro, se ve mientras carga). En celulares el video se reproduce en bucle; en computadoras avanza con el scroll |
+| Preguntas frecuentes (y cuáles salen en la home) | `src/content/faq.js` |
+| Términos y condiciones | `src/content/terms.js` (actualizar `TERMS_UPDATED` al cambiarlos) |
+| Razón social, RUC, dirección, teléfonos | `src/config/company.js` |
+| Anticipación mínima de reserva (hoy: 2 horas) | `src/config/bookingServices.js` → `MIN_NOTICE_MINUTES` |
+| Tipos de traslado (formulario y tarjetas de servicios) | `src/config/bookingServices.js` → `BOOKING_SERVICES` (`blurb` = texto de la tarjeta) |
+| Fotos de experiencia diplomática | copiar a `src/assets/diplomatico/` (se ordenan por nombre: `01-…`, `02-…`) |
+| Fotos de la galería | copiar a `src/assets/galeria/`; la sección aparece sola cuando hay fotos |
+| Descripción de cada foto | `src/content/photos.js` → `CAPTIONS` |
 | A dónde llegan las reservas (correo, Google Sheet) | Variables de entorno en Vercel — ver `docs/reservas-backend.md` |
 | Paleta de color | `src/index.css` → variables `--gold` `#FFD64B`, `--ink` `#0B0D0E`, `--graphite` `#1F2428`, `--silver` `#E5E7EB` |
 
@@ -91,4 +115,5 @@ npm run preview  # sirve el build de producción localmente
 
 - Reemplazar los placeholders `'#'` de Facebook/Instagram/TikTok en `socialLinks.js` cuando existan esas cuentas
 - Reemplazar las insignias de iniciales en `ClientsSection.jsx` por los logos PNG reales de cada cliente
-- Si se compra un dominio propio (en vez de `destinos-travel5.vercel.app`), actualizar la URL en: `index.html` (canonical, Open Graph, Twitter, JSON-LD), `public/robots.txt`, `public/sitemap.xml`, y conectar el dominio en Vercel → Settings → Domains
+- Las páginas internas (`/preguntas-frecuentes`, `/terminos`) funcionan gracias a `vercel.json` (rewrite a `index.html`)
+- Si se compra un dominio propio (en vez de `destinos-travel5.vercel.app`), actualizar la URL en: `index.html` (canonical, Open Graph, Twitter, JSON-LD), `src/lib/nav.js` (`SITE`), `public/robots.txt`, `public/sitemap.xml`, y conectar el dominio en Vercel → Settings → Domains

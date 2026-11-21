@@ -1,11 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { serviceIcon } from './serviceIcons';
 import {
-  PlaneLanding,
-  PlaneTakeoff,
-  Landmark,
-  Briefcase,
-  Mountain,
-  MapPinned,
   Lock,
   Minus,
   Plus,
@@ -18,26 +13,21 @@ import {
 } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
 import { WHATSAPP_NUMBER } from '../config/socialLinks';
+import { ROUTES, BOOK_SERVICE_EVENT } from '../lib/nav';
 import {
   BOOKING_SERVICES,
   LIMITS,
   EMAIL_RE,
   isValidPhone,
   minPickupDate,
+  isTooSoon,
+  MIN_NOTICE_MINUTES,
   serviceName,
   formatDate,
   plural,
 } from '../config/bookingServices';
 
-const ICONS = {
-  'transfer-in': PlaneLanding,
-  'transfer-out': PlaneTakeoff,
-  ejecutivo: Landmark,
-  tour: Mountain,
-  corporativo: Briefcase,
-  otro: MapPinned,
-};
-const SERVICES = BOOKING_SERVICES.map((s) => ({ ...s, icon: ICONS[s.id] ?? MapPinned }));
+const SERVICES = BOOKING_SERVICES.map((s) => ({ ...s, icon: serviceIcon(s.id) }));
 
 const EMPTY_FORM = {
   service: null,
@@ -219,6 +209,19 @@ export function BookingSection() {
     });
   }
 
+  // A "Reservar" button elsewhere on the page (service cards) picks the service for us.
+  useEffect(() => {
+    const onBook = (e) => {
+      const s = SERVICES.find((x) => x.id === e.detail);
+      if (!s) return;
+      if (status === 'sent') resetForm(); // start a new booking instead of editing the one just sent
+      setAttempted(null);
+      chooseService(s);
+    };
+    window.addEventListener(BOOK_SERVICE_EVENT, onBook);
+    return () => window.removeEventListener(BOOK_SERVICE_EVENT, onBook);
+  }, [status]);
+
   const missing = [];
   if (!service) missing.push('elegir el tipo de traslado');
   // Peru-time minimum, recomputed each render so it rolls over at midnight in Lima.
@@ -226,6 +229,9 @@ export function BookingSection() {
   const tooSoon = Boolean(form.date) && form.date < minDate;
   if (!form.date || !time) missing.push('el día y la hora');
   else if (tooSoon) missing.push('un día de recojo que no haya pasado');
+  // Same rule for the time: at least MIN_NOTICE_MINUTES from now (Peru time).
+  const timeTooSoon = !tooSoon && Boolean(form.date) && Boolean(time) && isTooSoon(form.date, time);
+  if (timeTooSoon) missing.push(`un horario con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación`);
   if (!form.from.trim() || !form.to.trim()) missing.push('la ruta');
   const ready = missing.length === 0;
 
@@ -307,7 +313,7 @@ export function BookingSection() {
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-display text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl`}
           style={{ animationDelay: '200ms' }}
         >
-          Tu ruta, <span className="text-[#FFD64B]">lista en un minuto.</span>
+          Reserva tu traslado <span className="text-[#FFD64B]">en un minuto.</span>
         </h2>
         <p
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} mt-4 max-w-lg text-base text-[#E5E7EB]/60`}
@@ -384,7 +390,8 @@ export function BookingSection() {
                     value={form.hour}
                     onChange={(e) => set('hour')(digits(e.target.value, 2))}
                     onBlur={() => set('hour')(normalizeTimePart(form.hour, 23))}
-                    className={`${inputClass} text-center tabular-nums`}
+                    aria-describedby="booking-time-help"
+                    className={`${inputClass} text-center tabular-nums ${timeTooSoon ? 'border-[#FFD64B]/70' : ''}`}
                   />
                   <span className="text-lg text-[#E5E7EB]/50">:</span>
                   <input
@@ -396,7 +403,8 @@ export function BookingSection() {
                     value={form.minute}
                     onChange={(e) => set('minute')(digits(e.target.value, 2))}
                     onBlur={() => set('minute')(normalizeTimePart(form.minute, 59))}
-                    className={`${inputClass} text-center tabular-nums`}
+                    aria-describedby="booking-time-help"
+                    className={`${inputClass} text-center tabular-nums ${timeTooSoon ? 'border-[#FFD64B]/70' : ''}`}
                   />
                   <datalist id="booking-hours">
                     {HOURS.map((h) => (
@@ -409,6 +417,14 @@ export function BookingSection() {
                     ))}
                   </datalist>
                 </div>
+                <span
+                  id="booking-time-help"
+                  className={`text-xs ${timeTooSoon ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/40'}`}
+                >
+                  {timeTooSoon
+                    ? `Reserva con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación (hora de Perú).`
+                    : `Mínimo ${MIN_NOTICE_MINUTES / 60} horas de anticipación.`}
+                </span>
               </Field>
               <Stepper label="Pasajeros" value={form.passengers} {...LIMITS.passengers} onChange={set('passengers')} />
               <Stepper label="Maletas" value={form.bags} {...LIMITS.bags} onChange={set('bags')} />
@@ -547,6 +563,13 @@ export function BookingSection() {
 
                 <p className={`mt-3 text-center text-sm ${hintAlert ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/45'}`} aria-live="polite">
                   {hint}
+                </p>
+                <p className="mt-2 text-center text-xs text-[#E5E7EB]/35">
+                  Al reservar aceptas los{' '}
+                  <a href={ROUTES.terms} className="text-[#E5E7EB]/60 underline underline-offset-2 hover:text-[#FFD64B]">
+                    Términos y condiciones
+                  </a>
+                  .
                 </p>
               </>
             )}

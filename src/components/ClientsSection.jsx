@@ -22,30 +22,18 @@ function ClientLogo({ client }) {
   );
 }
 
-export function ClientsSection() {
-  const [headRef, headRevealed] = useReveal(0.3);
+/** Client logos grid; shown inside the diplomatic-experience section. */
+export function ClientsGrid() {
   const [gridRef, gridRevealed] = useReveal(0.2);
 
   return (
-    <section id="clientes" className="bg-[#0B0D0E] px-4 py-24 sm:px-6 md:px-12 md:py-32">
-      <div ref={headRef} className="mb-14 max-w-2xl">
-        <p className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-label mb-3 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase`}>
-          Clientes
-        </p>
-        <div className={`rule mb-5 w-24 ${headRevealed ? 'animate-draw-line' : ''}`} style={{ animationDelay: '120ms' }} />
-        <h2
-          className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-display text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl`}
-          style={{ animationDelay: '200ms' }}
-        >
-          Confían en el trazado.
-        </h2>
-        <p
-          className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} mt-4 max-w-md text-base text-[#E5E7EB]/60`}
-          style={{ animationDelay: '320ms' }}
-        >
-          Nos enorgullece haber brindado servicio a instituciones, aerolíneas y organizaciones que exigen excelencia.
-        </p>
-      </div>
+    <div id="clientes" className="scroll-mt-24">
+      <h3 className="font-display mb-2 text-2xl tracking-[-0.01em] text-[#E5E7EB] sm:text-3xl">
+        Nos eligen quienes exigen más.
+      </h3>
+      <p className="mb-8 max-w-md text-base text-[#E5E7EB]/60">
+        Instituciones, aerolíneas y organizaciones que ya confiaron en nosotros.
+      </p>
 
       <div ref={gridRef} className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-[#1F2428] sm:grid-cols-2 lg:grid-cols-3">
         {CLIENTS.map((client, i) => (
@@ -59,6 +47,6 @@ export function ClientsSection() {
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
