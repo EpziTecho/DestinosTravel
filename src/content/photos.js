@@ -15,8 +15,8 @@ const CAPTIONS = {
   // Experiencia diplomática
   'diplomatico/20261121-01.jpeg': 'Conductor de Destinos Travel en servicio diplomático en APEC 2024',
   'diplomatico/20261121-02.jpeg': 'Conductor de Destinos Travel en servicio diplomático en APEC 2024',
-  'diplomatico/20261121-10.jpeg': 'Conductor de Destinos Travel en un servicio diplomático a la ONU',
-  'diplomatico/20261121-11.jpeg': 'Conductor de Destinos Travel en un servicio diplomático a la ONU',
+  'diplomatico/20261121-10.jpeg': 'Conductor de Destinos Travel en servicio de misión diplomática',
+  'diplomatico/20261121-11.jpeg': 'Conductor de Destinos Travel en servicio de misión diplomática',
 
   // Galería
   'galeria/20261121-01.jpeg': 'Destinos Travel en servicio',

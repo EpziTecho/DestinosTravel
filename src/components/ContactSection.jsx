@@ -1,6 +1,8 @@
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
-import { COMPANY, telHref } from '../config/company';
+import { COMPANY, telHref, waHref } from '../config/company';
+import { WHATSAPP_MESSAGE } from '../config/socialLinks';
+import { WhatsAppGlyph } from './WhatsAppGlyph';
 
 const CONTACT = [
   {
@@ -14,8 +16,9 @@ const CONTACT = [
     icon: Phone,
     label: 'Teléfonos',
     lines: COMPANY.phones,
+    // Each number is its own call link, with a WhatsApp button beside it.
+    phones: true,
     note: 'Atención 24/7 todos los días',
-    href: telHref(COMPANY.phones[0]),
   },
   {
     icon: MapPin,
@@ -61,11 +64,29 @@ export function ContactSection() {
               <Icon size={20} className="text-[#FFD64B]" />
               <span className="font-label text-[11px] tracking-[0.28em] text-[#E5E7EB]/40 uppercase">{item.label}</span>
               <div className="flex flex-col gap-1">
-                {item.lines.map((line) => (
-                  <span key={line} className="text-lg text-[#E5E7EB]">
-                    {line}
-                  </span>
-                ))}
+                {item.phones
+                  ? item.lines.map((phone) => (
+                      <span key={phone} className="flex items-center gap-3">
+                        <a href={telHref(phone)} className="text-lg whitespace-nowrap text-[#E5E7EB] hover:text-[#FFD64B]">
+                          {phone}
+                        </a>
+                        <a
+                          href={waHref(phone, WHATSAPP_MESSAGE)}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Escribir por WhatsApp al ${phone}`}
+                          title="Escribir por WhatsApp"
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#FFD64B]/30 text-[#FFD64B] transition-colors hover:bg-[#FFD64B] hover:text-[#0B0D0E]"
+                        >
+                          <WhatsAppGlyph size={16} />
+                        </a>
+                      </span>
+                    ))
+                  : item.lines.map((line) => (
+                      <span key={line} className="text-lg text-[#E5E7EB]">
+                        {line}
+                      </span>
+                    ))}
               </div>
               <span className="text-sm text-[#E5E7EB]/50">{item.note}</span>
             </Wrapper>

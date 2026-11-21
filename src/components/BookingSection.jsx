@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { serviceIcon } from './serviceIcons';
 import {
   Lock,
@@ -21,10 +21,14 @@ import {
   isValidPhone,
   minPickupDate,
   isTooSoon,
+  isPastTime,
   MIN_NOTICE_MINUTES,
+  SHORT_NOTICE_NOTE,
   serviceName,
   formatDate,
-  plural,
+  hides,
+  vehicleOptions,
+  travelSummary,
 } from '../config/bookingServices';
 
 const SERVICES = BOOKING_SERVICES.map((s) => ({ ...s, icon: serviceIcon(s.id) }));
@@ -36,6 +40,8 @@ const EMPTY_FORM = {
   minute: '',
   passengers: 1,
   bags: 1,
+  handBags: 0,
+  vehicle: '',
   from: '',
   to: '',
   flight: '',
@@ -60,23 +66,142 @@ function normalizeTimePart(v, max) {
 }
 
 
+
+const TIME_PARTS = {
+  hour: { max: 23, options: HOURS, label: 'Hora (00 a 23)', placeholder: 'HH', listLabel: 'Horas' },
+  minute: { max: 59, options: MINUTES, label: 'Minutos (00 a 59)', placeholder: 'MM', listLabel: 'Minutos' },
+};
+
+/**
+ * Pickup time: two boxes (HH : MM) that can be typed, plus a panel with every hour or
+ * every 5 minutes while one is focused. The panel always lists all the options (a native
+ * datalist would filter them by what is already typed). Picking an hour jumps to minutes.
+ */
+function TimePicker({ hour, minute, onHour, onMinute, highlight, describedBy }) {
+  const [open, setOpen] = useState(null); // 'hour' | 'minute' | null
+  const [draft, setDraft] = useState({ hour: null, minute: null });
+  const minuteRef = useRef(null);
+  const values = { hour, minute };
+  const setters = { hour: onHour, minute: onMinute };
+
+  const commit = (part) => {
+    const d = draft[part];
+    if (d) setters[part](normalizeTimePart(d, TIME_PARTS[part].max));
+    setDraft((x) => ({ ...x, [part]: null }));
+  };
+
+  const pick = (part, option) => {
+    setters[part](option);
+    setDraft((x) => ({ ...x, [part]: null }));
+    if (part === 'hour') minuteRef.current?.focus();
+    else setOpen(null);
+  };
+
+  const box = (part) => (
+    <input
+      ref={part === 'minute' ? minuteRef : undefined}
+      type="text"
+      inputMode="numeric"
+      autoComplete="off"
+      role="combobox"
+      aria-expanded={open === part}
+      aria-controls={`booking-${part}-list`}
+      aria-label={TIME_PARTS[part].label}
+      aria-describedby={describedBy}
+      placeholder={TIME_PARTS[part].placeholder}
+      value={draft[part] ?? values[part]}
+      onFocus={() => setOpen(part)}
+      onClick={() => setOpen(part)}
+      onChange={(e) => {
+        const d = digits(e.target.value, 2);
+        setDraft((x) => ({ ...x, [part]: d }));
+        if (d.length === 2) setters[part](normalizeTimePart(d, TIME_PARTS[part].max));
+      }}
+      onBlur={() => {
+        commit(part);
+        setOpen((o) => (o === part ? null : o));
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') setOpen(null);
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          commit(part);
+          setOpen(null);
+        }
+      }}
+      className={`${inputClass} text-center tabular-nums ${highlight ? 'border-[#FFD64B]/70' : ''} ${
+        open === part ? 'border-[#FFD64B]/60' : ''
+      }`}
+    />
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        {box('hour')}
+        <span className="text-lg text-[#E5E7EB]/50">:</span>
+        {box('minute')}
+      </div>
+      {open && (
+        <div
+          id={`booking-${open}-list`}
+          role="listbox"
+          aria-label={TIME_PARTS[open].listLabel}
+          className="grid grid-cols-6 gap-1.5 rounded-xl border border-[#1F2428] bg-[#0B0D0E]/90 p-2"
+        >
+          {TIME_PARTS[open].options.map((o) => {
+            const selected = values[open] === o;
+            return (
+              <button
+                key={o}
+                type="button"
+                role="option"
+                aria-selected={selected}
+                tabIndex={-1}
+                // Keep the focus in the box, so it doesn't blur and close the panel first.
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => pick(open, o)}
+                className={`rounded-lg py-2 text-sm tabular-nums transition-colors ${
+                  selected
+                    ? 'bg-[#FFD64B] text-[#0B0D0E]'
+                    : 'text-[#E5E7EB]/80 hover:bg-[#FFD64B]/15 hover:text-[#FFD64B]'
+                }`}
+              >
+                {o}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function buildMessage(f, service) {
+  const travel = travelSummary(service, f);
+  const labels = routeLabels(service);
   const lines = [
-    'Hola, vengo de la página web de Destinos Travel y quiero reservar un traslado:',
+    'Hola, vengo de la página web de Destinos Travel y quiero reservar un servicio:',
     '',
     `• Servicio: ${serviceName(service)}`,
     `• Fecha: ${formatDate(f.date)}, ${f.time}`,
-    `• Viajan: ${plural(f.passengers, 'pasajero', 'pasajeros')} · ${plural(f.bags, 'maleta', 'maletas')}`,
-    `• Recojo en: ${f.from.trim()}`,
-    `• Destino: ${f.to.trim()}`,
+    ...(travel ? [`• Viajan: ${travel}`] : []),
+    ...(f.vehicle ? [`• Vehículo: ${f.vehicle}`] : []),
+    `• ${labels.from}: ${f.from.trim()}`,
+    `• ${labels.to}: ${f.to.trim()}`,
   ];
   if (f.flight.trim()) lines.push(`• Vuelo: ${f.flight.trim()}`);
   if (f.name.trim()) lines.push(`• Nombre: ${f.name.trim()}`);
   if (f.email.trim()) lines.push(`• Correo: ${f.email.trim()}`);
+  if (f.phone.trim()) lines.push(`• Teléfono: ${f.phone.trim()}`);
   if (f.notes.trim()) lines.push(`• Notas: ${f.notes.trim()}`);
+  if (isTooSoon(f.date, f.time)) lines.push('', SHORT_NOTICE_NOTE);
   lines.push('', 'Quedo atento a la confirmación y la tarifa. ¡Gracias!');
   return lines.join('\n');
 }
+
+const DEFAULT_ROUTE_LABELS = { from: 'Te recogemos en', to: 'Te llevamos a' };
+const routeLabels = (service) => service?.fieldLabels ?? DEFAULT_ROUTE_LABELS;
 
 const inputClass =
   'w-full rounded-xl border border-[#1F2428] bg-[#0B0D0E]/70 px-4 py-3 text-[15px] text-[#E5E7EB] placeholder:text-[#E5E7EB]/30 outline-none transition-colors focus:border-[#FFD64B]/60';
@@ -99,7 +224,7 @@ function Field({ label, children }) {
   );
 }
 
-function Stepper({ label, value, min, max, onChange }) {
+function Stepper({ label, note, value, min, max, onChange }) {
   // `draft` lets the field be briefly empty while typing; it is clamped on blur.
   const [draft, setDraft] = useState(null);
   const commit = () => {
@@ -110,7 +235,10 @@ function Stepper({ label, value, min, max, onChange }) {
 
   return (
     <div className="flex items-center justify-between rounded-xl border border-[#1F2428] bg-[#0B0D0E]/70 px-4 py-2.5">
-      <span className="text-[15px] text-[#E5E7EB]/80">{label}</span>
+      <span className="flex flex-col text-[15px] leading-tight text-[#E5E7EB]/80">
+        {label}
+        {note && <span className="text-xs text-[#E5E7EB]/40">{note}</span>}
+      </span>
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -144,6 +272,39 @@ function Stepper({ label, value, min, max, onChange }) {
       </div>
     </div>
   );
+}
+
+function VehiclePicker({ options, value, onChange }) {
+  return (
+    <div role="radiogroup" aria-label="Tipo de vehículo" className="flex flex-wrap gap-2.5">
+      {options.map((v) => {
+        const active = value === v;
+        return (
+          <button
+            key={v}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(v)}
+            className={`flex-1 rounded-xl border px-4 py-3 text-[15px] whitespace-nowrap transition-colors ${
+              active
+                ? 'border-[#FFD64B] bg-[#FFD64B]/10 text-[#FFD64B]'
+                : 'border-[#1F2428] bg-[#0B0D0E]/70 text-[#E5E7EB]/80 hover:border-[#FFD64B]/40'
+            }`}
+          >
+            {v}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Step 2 title, matching what the service asks for. */
+function whenTitle(service) {
+  if (vehicleOptions(service)) return '¿Cuándo y en qué vehículo?';
+  if (hides(service, 'passengers')) return '¿Para cuándo?';
+  return '¿Cuándo y cuántos viajan?';
 }
 
 function RouteInput({ value, locked, onChange }) {
@@ -187,9 +348,15 @@ export function BookingSection() {
   const [status, setStatus] = useState('idle');
   const [serverError, setServerError] = useState('');
   const [bookingRef, setBookingRef] = useState('');
+  // Steppers the visitor changed by hand: a service's `defaults` don't override them.
+  const touched = useRef({});
 
   const set = (key) => (value) => setForm((f) => ({ ...f, [key]: value }));
   const setFromEvent = (key) => (e) => set(key)(e.target.value);
+  const setByHand = (key) => (value) => {
+    touched.current[key] = true;
+    set(key)(value);
+  };
 
   const service = SERVICES.find((s) => s.id === form.service);
   const isAirport = Boolean(service?.from || service?.to);
@@ -200,9 +367,17 @@ export function BookingSection() {
       const prev = SERVICES.find((p) => p.id === f.service);
       // A locked airport end is set by the new service, or cleared when leaving one that locked it.
       const end = (current, prevLocked, nextLocked) => nextLocked ?? (prevLocked ? '' : current);
+      // Untouched values take the new service's default, or go back to the form's default.
+      const defaults = {};
+      for (const key of new Set([...Object.keys(prev?.defaults ?? {}), ...Object.keys(s.defaults ?? {})])) {
+        if (!touched.current[key]) defaults[key] = s.defaults?.[key] ?? EMPTY_FORM[key];
+      }
+      const vehicles = vehicleOptions(s);
       return {
         ...f,
+        ...defaults,
         service: s.id,
+        vehicle: vehicles ? (vehicles.includes(f.vehicle) ? f.vehicle : vehicles[0]) : '',
         from: end(f.from, prev?.from, s.from),
         to: end(f.to, prev?.to, s.to),
       };
@@ -229,9 +404,12 @@ export function BookingSection() {
   const tooSoon = Boolean(form.date) && form.date < minDate;
   if (!form.date || !time) missing.push('el día y la hora');
   else if (tooSoon) missing.push('un día de recojo que no haya pasado');
-  // Same rule for the time: at least MIN_NOTICE_MINUTES from now (Peru time).
-  const timeTooSoon = !tooSoon && Boolean(form.date) && Boolean(time) && isTooSoon(form.date, time);
-  if (timeTooSoon) missing.push(`un horario con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación`);
+  // A time that already passed is blocked; less than MIN_NOTICE_MINUTES ahead is accepted,
+  // subject to availability (Peru time).
+  const hasDateTime = !tooSoon && Boolean(form.date) && Boolean(time);
+  const timePast = hasDateTime && isPastTime(form.date, time);
+  const shortNotice = hasDateTime && !timePast && isTooSoon(form.date, time);
+  if (timePast) missing.push('una hora que no haya pasado');
   if (!form.from.trim() || !form.to.trim()) missing.push('la ruta');
   const ready = missing.length === 0;
 
@@ -263,7 +441,14 @@ export function BookingSection() {
       const res = await fetch('/api/reservas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, time }),
+        body: JSON.stringify({
+          ...form,
+          time,
+          // Fields the service doesn't ask for are sent as 0.
+          passengers: hides(service, 'passengers') ? 0 : form.passengers,
+          bags: hides(service, 'bags') ? 0 : form.bags,
+          handBags: hides(service, 'handBags') ? 0 : form.handBags,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.ok) throw new Error(data.error || 'No pudimos enviar tu reserva.');
@@ -280,6 +465,7 @@ export function BookingSection() {
     setStatus('idle');
     setBookingRef('');
     setAttempted(null);
+    touched.current = {};
   }
 
   let hint;
@@ -292,6 +478,9 @@ export function BookingSection() {
     hintAlert = true;
   } else if (attempted === 'whatsapp' && !ready) {
     hint = `Falta ${missing.join(', ')}.`;
+    hintAlert = true;
+  } else if (shortNotice) {
+    hint = SHORT_NOTICE_NOTE;
     hintAlert = true;
   } else if (directReady) {
     hint = 'Te confirmamos la reserva y la tarifa antes del viaje.';
@@ -362,7 +551,7 @@ export function BookingSection() {
           {/* 2 — When & how many */}
           <fieldset className="liquid-glass rounded-2xl p-5 sm:p-6">
             <legend className="sr-only">Día, hora y pasajeros</legend>
-            <StepHeader n={2} title="¿Cuándo y cuántos viajan?" />
+            <StepHeader n={2} title={whenTitle(service)} />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label="Día del recojo">
                 <input
@@ -379,55 +568,47 @@ export function BookingSection() {
                 </span>}
               </Field>
               <Field label="Hora del recojo">
-                {/* Typed or picked from the suggestion list (minutes suggested every 5). */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    list="booking-hours"
-                    aria-label="Hora (00 a 23)"
-                    placeholder="HH"
-                    value={form.hour}
-                    onChange={(e) => set('hour')(digits(e.target.value, 2))}
-                    onBlur={() => set('hour')(normalizeTimePart(form.hour, 23))}
-                    aria-describedby="booking-time-help"
-                    className={`${inputClass} text-center tabular-nums ${timeTooSoon ? 'border-[#FFD64B]/70' : ''}`}
-                  />
-                  <span className="text-lg text-[#E5E7EB]/50">:</span>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    list="booking-minutes"
-                    aria-label="Minutos (00 a 59)"
-                    placeholder="MM"
-                    value={form.minute}
-                    onChange={(e) => set('minute')(digits(e.target.value, 2))}
-                    onBlur={() => set('minute')(normalizeTimePart(form.minute, 59))}
-                    aria-describedby="booking-time-help"
-                    className={`${inputClass} text-center tabular-nums ${timeTooSoon ? 'border-[#FFD64B]/70' : ''}`}
-                  />
-                  <datalist id="booking-hours">
-                    {HOURS.map((h) => (
-                      <option key={h} value={h} />
-                    ))}
-                  </datalist>
-                  <datalist id="booking-minutes">
-                    {MINUTES.map((m) => (
-                      <option key={m} value={m} />
-                    ))}
-                  </datalist>
-                </div>
+                <TimePicker
+                  hour={form.hour}
+                  minute={form.minute}
+                  onHour={set('hour')}
+                  onMinute={set('minute')}
+                  highlight={timePast || shortNotice}
+                  describedBy="booking-time-help"
+                />
                 <span
                   id="booking-time-help"
-                  className={`text-xs ${timeTooSoon ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/40'}`}
+                  className={`text-xs ${timePast || shortNotice ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/40'}`}
                 >
-                  {timeTooSoon
-                    ? `Reserva con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación (hora de Perú).`
-                    : `Mínimo ${MIN_NOTICE_MINUTES / 60} horas de anticipación.`}
+                  {timePast
+                    ? 'Esa hora ya pasó (hora de Perú).'
+                    : shortNotice
+                      ? SHORT_NOTICE_NOTE
+                      : `Reserva con ${MIN_NOTICE_MINUTES / 60} horas de anticipación. Con menos, queda sujeta a disponibilidad.`}
                 </span>
               </Field>
-              <Stepper label="Pasajeros" value={form.passengers} {...LIMITS.passengers} onChange={set('passengers')} />
-              <Stepper label="Maletas" value={form.bags} {...LIMITS.bags} onChange={set('bags')} />
+              {!hides(service, 'passengers') && (
+                <Stepper label="Pasajeros" value={form.passengers} {...LIMITS.passengers} onChange={setByHand('passengers')} />
+              )}
+              {!hides(service, 'bags') && (
+                <Stepper label="Maletas" note="De hasta 23 kg" value={form.bags} {...LIMITS.bags} onChange={setByHand('bags')} />
+              )}
+              {!hides(service, 'handBags') && (
+                <Stepper
+                  label="Maletas de mano"
+                  note="De hasta 10 kg"
+                  value={form.handBags}
+                  {...LIMITS.handBags}
+                  onChange={setByHand('handBags')}
+                />
+              )}
+              {vehicleOptions(service) && (
+                <div className="sm:col-span-2">
+                  <Field label="Tipo de vehículo">
+                    <VehiclePicker options={vehicleOptions(service)} value={form.vehicle} onChange={set('vehicle')} />
+                  </Field>
+                </div>
+              )}
             </div>
           </fieldset>
 
@@ -436,10 +617,10 @@ export function BookingSection() {
             <legend className="sr-only">Ruta y datos</legend>
             <StepHeader n={3} title="¿Desde dónde y hasta dónde?" />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="Te recogemos en">
+              <Field label={routeLabels(service).from}>
                 <RouteInput value={form.from} locked={Boolean(service?.from)} onChange={setFromEvent('from')} />
               </Field>
-              <Field label="Te llevamos a">
+              <Field label={routeLabels(service).to}>
                 <RouteInput value={form.to} locked={Boolean(service?.to)} onChange={setFromEvent('to')} />
               </Field>
               {isAirport && (
@@ -502,7 +683,7 @@ export function BookingSection() {
                     rows={2}
                     value={form.notes}
                     onChange={setFromEvent('notes')}
-                    placeholder="Silla para bebé, paradas, equipaje especial…"
+                    placeholder={service?.notesHint ?? "Silla para bebé, paradas, equipaje especial…"}
                     className={`${inputClass} resize-none`}
                   />
                 </Field>
@@ -517,10 +698,8 @@ export function BookingSection() {
             <p className="font-label mb-2 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase">Tu traslado</p>
             <SummaryRow label="Servicio" value={service && serviceName(service)} />
             <SummaryRow label="Día y hora" value={when} />
-            <SummaryRow
-              label="Viajan"
-              value={`${plural(form.passengers, 'pasajero', 'pasajeros')} · ${plural(form.bags, 'maleta', 'maletas')}`}
-            />
+            {travelSummary(service, form) && <SummaryRow label="Viajan" value={travelSummary(service, form)} />}
+            {vehicleOptions(service) && <SummaryRow label="Vehículo" value={form.vehicle} />}
             <SummaryRow label="Ruta" value={route} />
 
             {status === 'sent' ? (
@@ -530,7 +709,7 @@ export function BookingSection() {
                 <p className="text-sm text-[#E5E7EB]/65">
                   Tu código es <strong className="text-[#FFD64B]">{bookingRef}</strong>. Te escribiremos
                   {phone && email ? ' por WhatsApp o correo' : phone ? ' por WhatsApp' : ' por correo'} para confirmar
-                  la tarifa y los datos de tu chofer.
+                  la reserva y la tarifa. Los datos de tu conductor te llegan hasta 30 minutos antes del traslado.
                 </p>
                 <button
                   type="button"
@@ -578,8 +757,8 @@ export function BookingSection() {
               <span className="flex items-center gap-2">
                 <Clock size={14} className="text-[#FFD64B]" /> Atendemos las 24 horas, todos los días
               </span>
-              <span className="flex items-center gap-2">
-                <CalendarCheck size={14} className="text-[#FFD64B]" /> Confirmación con los datos de tu chofer
+              <span className="flex items-start gap-2">
+                <CalendarCheck size={14} className="mt-0.5 shrink-0 text-[#FFD64B]" /> Primero te confirmamos la reserva; luego, los datos de tu conductor
               </span>
             </div>
           </div>

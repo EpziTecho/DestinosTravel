@@ -2,7 +2,7 @@
 // Each section: { id, title, items: [string | { text, list: [string] }] }.
 // Rendered by src/pages/TermsPage.jsx at /terminos.
 
-export const TERMS_UPDATED = '17 de noviembre de 2026';
+export const TERMS_UPDATED = '21 de noviembre de 2026';
 
 export const TERMS_SECTIONS = [
   {
@@ -10,7 +10,8 @@ export const TERMS_SECTIONS = [
     title: 'Reservas y confirmación',
     items: [
       'Las reservas se realizan desde la web (envío directo o WhatsApp), por WhatsApp, por teléfono o por correo, con al menos 2 horas de anticipación al traslado.',
-      'Toda reserva queda sujeta a confirmación por parte de Destinos Travel. Unas horas antes del traslado enviamos al cliente los datos de su conductor.',
+      'También se reciben reservas con menos de 2 horas de anticipación, pero quedan sujetas a la disponibilidad de conductores y vehículos. Si no podemos atenderlas, se lo informamos al cliente lo antes posible.',
+      'Toda reserva queda sujeta a confirmación por parte de Destinos Travel. Primero confirmamos la reserva al cliente; luego le enviamos los datos de su conductor, que pueden llegar hasta 30 minutos antes del traslado.',
       'El cliente es responsable de que los datos de la reserva (fecha, hora, direcciones, número de vuelo, cantidad de pasajeros y equipaje) sean correctos.',
     ],
   },
@@ -88,11 +89,72 @@ export const TERMS_SECTIONS = [
     ],
   },
   {
+    id: 'zona-operativa',
+    title: 'Zona operativa',
+    items: [
+      {
+        text: 'Nuestra zona operativa comprende:',
+        list: [
+          'Miraflores, San Isidro, Barranco, Jesús María, Lince, Magdalena del Mar y San Miguel.',
+          'El Aeropuerto Internacional Jorge Chávez.',
+          'Callao, La Molina y Santiago de Surco, en algunos sectores (consúltanos al reservar).',
+        ],
+      },
+      'Fuera de esta zona también atendemos, y lo que corresponda al desplazamiento se informa al confirmar la reserva.',
+    ],
+  },
+  {
+    id: 'objetos-olvidados',
+    title: 'Objetos olvidados',
+    items: [
+      'En todos nuestros servicios, si el cliente deja un objeto en el vehículo, tiene total garantía de que seguirá ahí: el conductor lo guarda y coordinamos con el cliente su devolución.',
+    ],
+  },
+  {
     id: 'corporativo-por-horas',
     title: 'Servicio corporativo por horas',
     items: [
       'Se contrata por un mínimo de 3 horas.',
       'Cubre recorridos entre distritos adyacentes. No aplica a traslados hacia o desde el aeropuerto.',
+    ],
+  },
+  {
+    id: 'conductor-institucion',
+    title: 'Conductor para tu institución',
+    items: [
+      'Destinos Travel pone a disposición de empresas e instituciones un conductor profesional para manejar los vehículos del propio cliente, por ejemplo durante las vacaciones, licencias o ausencias de su conductor habitual.',
+      'El servicio se calcula por horas, con un mínimo de 5 horas. Los días, el horario y las condiciones se acuerdan por escrito antes de empezar.',
+      'El vehículo debe tener SOAT vigente, revisión técnica al día y tarjeta de propiedad, y estar en buen estado mecánico. El mantenimiento y el estado del vehículo son responsabilidad del cliente.',
+      'El combustible, los peajes y los estacionamientos durante el servicio corren por cuenta del cliente.',
+      'Si el servicio empieza o termina fuera de la zona operativa, el traslado del conductor hasta allí o de regreso lo asume el cliente.',
+      'El conductor es personal de Destinos Travel. No existe relación laboral entre el conductor y el cliente.',
+      'El conductor respeta las normas de tránsito y puede negarse a seguir instrucciones que las incumplan o que pongan en riesgo a los pasajeros o al vehículo.',
+      'Las multas de tránsito causadas por el conductor son responsabilidad de Destinos Travel. Las que se deban al estado, los documentos o los permisos del vehículo son responsabilidad del cliente.',
+    ],
+  },
+  {
+    id: 'conductor-reemplazo',
+    title: 'Conductor de reemplazo',
+    items: [
+      'El conductor de reemplazo maneja el vehículo del propio cliente, por ejemplo en bodas, fiestas y eventos, o cuando el cliente no puede o no debe manejar.',
+      'El vehículo debe tener SOAT vigente y revisión técnica al día, y estar en condiciones seguras para circular. El conductor puede no iniciar el servicio si el vehículo no cumple estas condiciones.',
+      'Antes de empezar, el conductor y el cliente revisan juntos el vehículo y dejan constancia, con fotos, de su estado. Destinos Travel no responde por daños o fallas previos al servicio.',
+      'El vehículo lleva como máximo tantas personas como asientos con cinturón de seguridad tenga.',
+      'Se cobra una tarifa plana por hora, por toda la duración del servicio, incluido el tiempo que el conductor espera durante el evento.',
+      'Si el servicio empieza o termina fuera de la zona operativa, el traslado del conductor hasta allí o de regreso lo asume el cliente.',
+    ],
+  },
+  {
+    id: 'courier',
+    title: 'Courier confidencial',
+    items: [
+      'El servicio de courier comprende el recojo y la entrega en mano de documentos confidenciales y encargos de alta confianza.',
+      'El cliente entrega el envío cerrado o sellado. Destinos Travel no abre ni revisa su contenido, y lo lleva directamente, sin intermediarios, de quien lo entrega a quien lo recibe.',
+      'Al reservar, el cliente indica el nombre y el documento de identidad de quien recibe. El envío solo se entrega a esa persona, o a quien el cliente autorice por escrito, después de verificar su identidad.',
+      'Quien recibe firma digitalmente la entrega, y el cliente la corrobora. Así queda constancia de quién recibió, la fecha y la hora.',
+      'No se transportan objetos ilegales ni objetos cuyo traslado esté prohibido por la ley.',
+      'Si el destinatario no está disponible, el conductor espera 15 minutos de cortesía. Después, la entrega se reprograma con un costo adicional.',
+      'La tarifa mínima del servicio de courier es de S/ 30.00.',
     ],
   },
   {

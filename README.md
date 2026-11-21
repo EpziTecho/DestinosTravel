@@ -80,7 +80,7 @@ public/
 | Mensaje predeterminado de WhatsApp | `src/config/socialLinks.js` → `WHATSAPP_MESSAGE` |
 | Número de WhatsApp | `src/config/socialLinks.js` → `WHATSAPP_NUMBER` |
 | URLs de Facebook / Instagram / TikTok | `src/config/socialLinks.js` → `SOCIAL_LINKS` (hoy son `'#'` placeholders) |
-| Logos de clientes | `src/components/ClientsSection.jsx` → array `CLIENTS`, campo `logo` (hoy `null` = insignia con iniciales; poner el `import` del PNG real cuando se tenga) |
+| Clientes (categorías y clientes con nombre) | `src/content/clients.js` → `CLIENT_TYPES` y `CLIENTS` (solo se muestran los que tengan `authorized: true`) |
 | Textos de Misión / Visión / Nosotros / Servicios | `src/components/CinematicScroll.jsx`, componentes `<Beat />` |
 | Video de fondo | `src/assets/hero.mp4` + `src/assets/hero-poster.webp` (primer cuadro, se ve mientras carga). En celulares el video se reproduce en bucle; en computadoras avanza con el scroll |
 | Preguntas frecuentes (y cuáles salen en la home) | `src/content/faq.js` |

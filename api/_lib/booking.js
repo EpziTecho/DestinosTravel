@@ -7,11 +7,14 @@ import {
   isValidPhone,
   serviceName,
   formatDate,
-  plural,
+  hides,
+  vehicleOptions,
+  travelSummary,
   peruDateISO,
   minPickupDate,
   isTooSoon,
-  MIN_NOTICE_MINUTES,
+  isPastTime,
+  SHORT_NOTICE_NOTE,
 } from '../../src/config/bookingServices.js';
 
 const MAX_LEN = { from: 200, to: 200, flight: 20, name: 100, email: 150, phone: 30, notes: 1000 };
@@ -36,17 +39,23 @@ export function validateBooking(body) {
   const time = str(b.time);
   const [hh, mm] = time.split(':').map(Number);
   if (!/^\d{2}:\d{2}$/.test(time) || hh > 23 || mm > 59) errors.push('Hora no válida.');
-  else if (!errors.length && isTooSoon(date, time)) {
-    errors.push(`Reserva con al menos ${MIN_NOTICE_MINUTES / 60} horas de anticipación.`);
-  }
+  else if (!errors.length && isPastTime(date, time)) errors.push('Esa hora ya pasó (hora de Perú).');
+  // Short notice is accepted, flagged as subject to availability.
+  const shortNotice = !errors.length && isTooSoon(date, time);
 
   const int = (v, { min, max }, label) => {
     const n = Number(v);
     if (!Number.isInteger(n) || n < min || n > max) errors.push(`${label}: entre ${min} y ${max}.`);
     return n;
   };
-  const passengers = int(b.passengers, LIMITS.passengers, 'Pasajeros');
-  const bags = int(b.bags, LIMITS.bags, 'Maletas');
+  // Fields the service doesn't ask for (e.g. courier) are stored as 0.
+  const passengers = hides(service, 'passengers') ? 0 : int(b.passengers, LIMITS.passengers, 'Pasajeros');
+  const bags = hides(service, 'bags') ? 0 : int(b.bags, LIMITS.bags, 'Maletas');
+  const handBags = hides(service, 'handBags') ? 0 : int(b.handBags ?? 0, LIMITS.handBags, 'Maletas de mano');
+
+  const vehicles = vehicleOptions(service);
+  const vehicle = vehicles ? str(b.vehicle) : '';
+  if (vehicles && !vehicles.includes(vehicle)) errors.push('Tipo de vehículo no válido.');
 
   const fields = {};
   for (const key of Object.keys(MAX_LEN)) {
@@ -63,7 +72,19 @@ export function validateBooking(body) {
 
   if (errors.length) return { errors };
   return {
-    booking: { service: serviceName(service), date, time, passengers, bags, ...fields },
+    booking: {
+      service: serviceName(service),
+      date,
+      time,
+      passengers,
+      bags,
+      handBags,
+      vehicle,
+      travel: travelSummary(service, { passengers, bags, handBags }),
+      routeLabels: service.fieldLabels ?? null,
+      notice: shortNotice ? SHORT_NOTICE_NOTE : '',
+      ...fields,
+    },
   };
 }
 
@@ -79,14 +100,16 @@ export function bookingRows(b) {
   return [
     ['Servicio', b.service],
     ['Fecha', `${formatDate(b.date)}, ${b.time}`],
-    ['Viajan', `${plural(b.passengers, 'pasajero', 'pasajeros')} · ${plural(b.bags, 'maleta', 'maletas')}`],
-    ['Recojo en', b.from],
-    ['Destino', b.to],
+    ['Viajan', b.travel],
+    ['Vehículo', b.vehicle],
+    [b.routeLabels?.from ?? 'Recojo en', b.from],
+    [b.routeLabels?.to ?? 'Destino', b.to],
     ['Vuelo', b.flight],
     ['Nombre', b.name],
     ['Correo', b.email],
     ['Teléfono', b.phone],
     ['Notas', b.notes],
+    ['Aviso', b.notice],
   ].filter(([, v]) => v);
 }
 

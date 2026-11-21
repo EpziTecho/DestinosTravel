@@ -15,12 +15,12 @@ export const FAQ_GROUPS = [
       },
       {
         q: '¿Con cuánta anticipación debo reservar?',
-        a: 'Con al menos 2 horas de anticipación antes de tu traslado.',
+        a: 'Te recomendamos reservar con al menos 2 horas de anticipación. Si te falta menos tiempo, igual puedes enviar tu reserva, pero queda sujeta a disponibilidad.',
         featured: true,
       },
       {
         q: '¿Cómo me confirman la reserva?',
-        a: 'Te confirmamos la reserva y, unas horas antes de tu traslado, te enviamos los datos de tu conductor.',
+        a: 'Primero te confirmamos la reserva. Luego te enviamos los datos de tu conductor, que pueden llegar hasta 30 minutos antes del traslado.',
       },
       {
         q: '¿Puedo cambiar o cancelar mi reserva?',

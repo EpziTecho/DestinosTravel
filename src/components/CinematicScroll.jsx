@@ -192,9 +192,9 @@ export function CinematicScroll() {
             ¿A dónde te <span className="text-[#FFD64B]">llevamos?</span>
           </>
         }
-        sub="Siete servicios, un mismo estándar: puntualidad, seguridad y atención personalizada las 24 horas."
+        sub="Diez servicios, un mismo estándar: puntualidad, seguridad y atención personalizada las 24 horas."
         specs={[
-          { label: 'Servicios', value: '7' },
+          { label: 'Servicios', value: '10' },
           { label: 'Atención', value: '24/7' },
           { label: 'Cobertura', value: 'Lima y provincias' },
         ]}
