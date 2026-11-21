@@ -72,8 +72,9 @@ export function Navbar() {
       </nav>
 
       <div
-        className={`fixed inset-x-0 top-0 z-40 flex flex-col items-center justify-center gap-6 overflow-hidden bg-[#0B0D0E]/95 pt-20 backdrop-blur transition-all duration-500 lg:hidden ${
-          open ? 'h-[26rem] opacity-100' : 'pointer-events-none h-0 opacity-0'
+        className={`fixed inset-x-0 top-0 z-40 flex flex-col items-center justify-center-safe gap-6 bg-[#0B0D0E]/95 pt-20 backdrop-blur transition-all duration-500 lg:hidden ${
+          // Capped at the screen height (phones held sideways) and scrollable inside.
+          open ? 'h-[26rem] max-h-svh overflow-y-auto pb-6 opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'
         }`}
       >
         {LINKS.map((link) => (

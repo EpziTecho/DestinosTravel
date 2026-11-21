@@ -1,6 +1,7 @@
 // Centralized so every social URL can be swapped from one place.
 // Replace the '#' placeholders with the real profile URLs when ready.
-export const WHATSAPP_NUMBER = '51993523742';
+// Main number: floating button, "Reservar por WhatsApp" and the Empresas section.
+export const WHATSAPP_NUMBER = '51930703900';
 
 // Edit this to change the pre-filled text on every WhatsApp button/link.
 export const WHATSAPP_MESSAGE =

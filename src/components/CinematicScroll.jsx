@@ -50,7 +50,8 @@ export function CinematicScroll() {
   // Height comes from the content: one screen for the hero + the four shorter beats.
   return (
     <section ref={containerRef} id="top" className="relative">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      {/* svh: the height actually visible on phones, without the browser's address bar. */}
+      <div className="sticky top-0 h-svh w-full overflow-hidden">
         <video
           ref={videoRef}
           className="absolute inset-0 z-0 h-full w-full object-cover"
@@ -66,11 +67,14 @@ export function CinematicScroll() {
 
         <div
           ref={heroRef}
-          className="absolute inset-0 z-10 flex flex-col items-start justify-end px-4 pb-20 sm:px-6 md:px-12 md:pb-28"
+          // pt reserves the navbar's height; justify-end-safe falls back to top alignment if the
+          // text is ever taller than the space, so it can't slide under the navbar.
+          // On phones pb leaves room for the floating WhatsApp button (bottom right).
+          className="absolute inset-0 z-10 flex flex-col items-start justify-end-safe px-4 pt-24 pb-24 sm:px-6 md:px-12 md:pt-32 md:pb-28 short:pb-20 md:short:pb-12"
         >
           <div className="flex max-w-4xl flex-col items-start text-left">
             <div
-              className="font-label text-video-shadow animate-blur-fade-up mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] tracking-[0.18em] text-[#E5E7EB]/80 uppercase"
+              className="font-label text-video-shadow animate-blur-fade-up mb-6 flex flex-wrap short:hidden items-center gap-x-6 gap-y-2 text-[11px] tracking-[0.18em] text-[#E5E7EB]/80 uppercase"
               style={{ animationDelay: '300ms' }}
             >
               <span className="flex items-center gap-2">
@@ -84,24 +88,25 @@ export function CinematicScroll() {
               </span>
             </div>
 
-            <div className="rule animate-draw-line mb-6 w-[120px]" />
+            <div className="rule animate-draw-line mb-6 w-[120px] short:hidden" />
 
             <p
-              className="font-label text-video-shadow animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase"
+              className="font-label text-video-shadow animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase tiny:hidden"
               style={{ animationDelay: '380ms' }}
             >
               DESTINOS TRAVEL / TRANSPORTE EJECUTIVO
             </p>
 
             <h1
-              className="font-display text-video-shadow animate-blur-fade-up text-4xl leading-[1.05] tracking-[-0.01em] text-[#E5E7EB] sm:text-5xl md:text-6xl lg:text-7xl"
+              // Sized by width and height, so short screens get a smaller title (32–72px).
+              className="font-display text-video-shadow animate-blur-fade-up text-[clamp(2rem,min(8vw,7.5vh),4.5rem)] leading-[1.05] tracking-[-0.01em] text-[#E5E7EB]"
               style={{ animationDelay: '450ms' }}
             >
               Su visión dicta el destino, <span className="text-[#FFD64B]">nuestro protocolo asegura el trayecto.</span>
             </h1>
 
             <p
-              className="text-video-shadow animate-blur-fade-up mt-5 max-w-xl text-base text-[#E5E7EB]/80 sm:text-lg"
+              className="text-video-shadow animate-blur-fade-up mt-5 max-w-xl text-base text-[#E5E7EB]/80 sm:text-lg tiny:hidden"
               style={{ animationDelay: '560ms' }}
             >
               Transporte ejecutivo y diplomático en Lima: aeropuerto, empresas y viajes fuera de la ciudad. Conductores
@@ -109,7 +114,7 @@ export function CinematicScroll() {
             </p>
 
             <div
-              className="animate-blur-fade-up mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4"
+              className="animate-blur-fade-up mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4 tiny:mt-5"
               style={{ animationDelay: '620ms' }}
             >
               <button
@@ -129,7 +134,7 @@ export function CinematicScroll() {
             </div>
 
             <div
-              className="font-label text-video-shadow animate-blur-fade-up mt-8 flex items-center gap-3 text-[11px] tracking-[0.24em] text-[#E5E7EB]/60 uppercase"
+              className="font-label text-video-shadow animate-blur-fade-up mt-8 flex items-center gap-3 text-[11px] tracking-[0.24em] text-[#E5E7EB]/60 uppercase short:hidden"
               style={{ animationDelay: '680ms' }}
             >
               Desliza para conocernos
@@ -187,9 +192,9 @@ export function CinematicScroll() {
             ¿A dónde te <span className="text-[#FFD64B]">llevamos?</span>
           </>
         }
-        sub="Siete servicios, un mismo estándar: puntualidad, seguridad y atención personalizada las 24 horas."
+        sub="Diez servicios, un mismo estándar: puntualidad, seguridad y atención personalizada las 24 horas."
         specs={[
-          { label: 'Servicios', value: '7' },
+          { label: 'Servicios', value: '10' },
           { label: 'Atención', value: '24/7' },
           { label: 'Cobertura', value: 'Lima y provincias' },
         ]}

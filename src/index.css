@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* `short:` — screens with little height (small phones, landscape, laptops with browser bars). */
+@custom-variant short (@media (max-height: 760px));
+/* `tiny:` — very little height, e.g. a phone held sideways. */
+@custom-variant tiny (@media (max-height: 480px));
+
 :root {
   color-scheme: dark;
   --gold: #ffd64b;
