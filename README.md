@@ -65,11 +65,11 @@ api/
 docs/
   reservas-backend.md          cómo configurar Resend, la Google Sheet y las variables de entorno
   assets/
-    logo-mark.png               escudo del logo (fondo transparente real — el PNG original traía un cuadriculado falso "horneado" en los píxeles, se limpió con chroma-key)
-    logo-stars.png               las 5 estrellas del logo original
+    logo-horizontal.webp        logo completo (escudo + nombre + estrellas), en la barra superior y el pie
 public/
-  og-image.jpg                imagen de vista previa para redes sociales (1200×630)
+  og-image.jpg                imagen de vista previa para redes sociales (1200×630), hecha con el logo completo
   favicon.png                 favicon de marca (el escudo)
+  apple-touch-icon.png        ícono al guardar la web en la pantalla de inicio del celular
   robots.txt / sitemap.xml    SEO
 ```
 

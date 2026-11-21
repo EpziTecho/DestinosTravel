@@ -1,6 +1,7 @@
 import { SocialIcons } from './SocialIcons';
 import { COMPANY } from '../config/company';
 import { ROUTES } from '../lib/nav';
+import logoHorizontal from '../assets/logo-horizontal.webp';
 
 const LINKS = [
   { label: 'Reservar', href: '/#reservar' },
@@ -16,6 +17,14 @@ export function Footer() {
       <div className="rule" />
       <div className="flex flex-col gap-8 py-10 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex flex-col gap-2 text-xs text-[#E5E7EB]/45">
+          <img
+            src={logoHorizontal}
+            alt="Destinos Travel"
+            width="542"
+            height="168"
+            loading="lazy"
+            className="mb-3 h-14 w-auto self-start"
+          />
           <span className="font-label tracking-[0.1em] text-[#E5E7EB]/60 uppercase">
             Destinos Travel — Transporte ejecutivo · Lima, Perú
           </span>

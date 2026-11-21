@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import logo from '../assets/logo-mark.png';
-import stars from '../assets/logo-stars.png';
+import logoHorizontal from '../assets/logo-horizontal.webp';
 import { goToSection } from '../lib/nav';
 
 const LINKS = [
@@ -21,19 +20,20 @@ export function Navbar() {
       <nav className="fixed top-0 z-50 flex w-full items-center justify-between px-4 py-4 backdrop-blur-md sm:px-6 md:px-12 md:py-6">
         <a
           href="/"
-          className="animate-blur-fade-up flex items-center gap-3"
+          className="animate-blur-fade-up flex shrink-0 items-center gap-3"
           style={{ animationDelay: '0ms' }}
         >
-          <img src={logo} alt="Destinos Travel" className="h-9 w-auto md:h-11" />
-          <span className="hidden flex-col sm:flex">
-            <span className="font-display text-lg tracking-[0.04em] text-[#FFD64B] md:text-xl">
-              DESTINOS TRAVEL
-            </span>
-            <img src={stars} alt="" className="mt-0.5 h-2 w-auto self-center md:h-2.5" />
-          </span>
+          {/* Slightly smaller from 1024 to 1279 px, where the row of links is tightest. */}
+          <img
+            src={logoHorizontal}
+            alt="Destinos Travel"
+            width="542"
+            height="168"
+            className="h-11 w-auto sm:h-12 lg:h-11 xl:h-14"
+          />
         </a>
 
-        <div className="hidden items-center gap-6 lg:flex xl:gap-8">
+        <div className="hidden items-center gap-4 whitespace-nowrap lg:flex xl:gap-8">
           {LINKS.map((link, i) => (
             <button
               key={link.label}
@@ -48,7 +48,7 @@ export function Navbar() {
 
         <button
           onClick={() => goToSection('#reservar')}
-          className="font-label liquid-glass animate-blur-fade-up hidden items-center gap-2 rounded-full px-5 py-2 text-sm tracking-[0.04em] text-[#FFD64B] lg:flex"
+          className="font-label liquid-glass animate-blur-fade-up hidden shrink-0 items-center gap-2 rounded-full px-5 py-2 text-sm tracking-[0.04em] whitespace-nowrap text-[#FFD64B] lg:flex"
           style={{ animationDelay: '300ms' }}
         >
           Reservar traslado
