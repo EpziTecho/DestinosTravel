@@ -3,6 +3,8 @@ import { useReveal } from '../hooks/useReveal';
 import { DIPLOMATIC_PHOTOS } from '../content/photos';
 import { SectionHeading } from './SectionHeading';
 import { ClientsGrid } from './ClientsSection';
+import { PhotoGrid } from './PhotoViewer';
+import { usePhotoViewer } from '../hooks/usePhotoViewer';
 
 const POINTS = [
   {
@@ -22,27 +24,9 @@ const POINTS = [
   },
 ];
 
-function Photo({ photo, index }) {
-  const [ref, revealed] = useReveal(0.2);
-  return (
-    <figure
-      ref={ref}
-      className={`${revealed ? 'animate-blur-fade-up' : 'opacity-0'} overflow-hidden rounded-2xl border border-[#1F2428]`}
-      style={{ animationDelay: `${index * 120}ms` }}
-    >
-      <img
-        src={photo.src}
-        alt={photo.alt}
-        loading="lazy"
-        decoding="async"
-        className="aspect-[4/3] h-full w-full object-cover"
-      />
-    </figure>
-  );
-}
-
 export function DiplomaticSection() {
   const [pointsRef, pointsRevealed] = useReveal(0.2);
+  const [openPhoto, viewer] = usePhotoViewer(DIPLOMATIC_PHOTOS);
 
   return (
     <section id="diplomatico" className="bg-[#0B0D0E] px-4 py-24 sm:px-6 md:px-12 md:py-32">
@@ -57,12 +41,9 @@ export function DiplomaticSection() {
       />
 
       {DIPLOMATIC_PHOTOS.length > 0 && (
-        <div className={`mb-12 grid grid-cols-1 gap-5 ${DIPLOMATIC_PHOTOS.length > 1 ? 'sm:grid-cols-2' : ''}`}>
-          {DIPLOMATIC_PHOTOS.map((p, i) => (
-            <Photo key={p.key} photo={p} index={i} />
-          ))}
-        </div>
+        <PhotoGrid photos={DIPLOMATIC_PHOTOS} onOpen={openPhoto} className="mb-12" />
       )}
+      {viewer}
 
       <ul ref={pointsRef} className="mb-20 grid grid-cols-1 gap-8 sm:grid-cols-3">
         {POINTS.map(({ icon: Icon, title, text }, i) => (
