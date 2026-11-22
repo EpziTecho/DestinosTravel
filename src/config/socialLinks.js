@@ -8,8 +8,8 @@ export const WHATSAPP_MESSAGE =
   'Hola, vengo de la página web de Destinos Travel. Quisiera cotizar un servicio de transporte ejecutivo.';
 
 export const SOCIAL_LINKS = {
-  facebook: '#',
+  facebook: 'https://www.facebook.com/destinostravel5eirl',
   instagram: '#',
   whatsapp: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`,
-  tiktok: '#',
+  tiktok: 'https://www.tiktok.com/@destinostravel5eirl',
 };
