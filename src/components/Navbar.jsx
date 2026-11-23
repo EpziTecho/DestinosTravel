@@ -3,10 +3,11 @@ import { Menu, X } from 'lucide-react';
 import logoHorizontal from '../assets/logo-horizontal.webp';
 import { goToSection } from '../lib/nav';
 
+// Same order as the sections on the page, so jumping through the menu always moves the same way.
 const LINKS = [
+  { label: 'Nosotros', href: '#nosotros' },
   { label: 'Servicios', href: '#servicios' },
   { label: 'Reservar', href: '#reservar' },
-  { label: 'Nosotros', href: '#nosotros' },
   { label: 'Empresas', href: '#empresas' },
   { label: 'Preguntas', href: '#preguntas' },
   { label: 'Contacto', href: '#contacto' },
