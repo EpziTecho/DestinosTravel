@@ -6,7 +6,7 @@ export const COMPANY = {
   address: 'Jr. Puerto Esperanza 419, San Martín de Porres, Lima, Perú',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Jr.+Puerto+Esperanza+419,+San+Mart%C3%ADn+de+Porres,+Lima',
   email: 'destinostravel5eirl@gmail.com',
-  phones: ['+51 930 703 900', '+51 993 523 742', '+51 942 665 919'],
+  phones: ['+51 993 523 742', '+51 930 703 900', '+51 942 665 919'],
 };
 
 export const telHref = (phone) => `tel:${phone.replace(/\s/g, '')}`;

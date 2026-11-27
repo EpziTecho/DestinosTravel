@@ -1,14 +1,15 @@
 import { SocialIcons } from './SocialIcons';
 import { COMPANY } from '../config/company';
 import { ROUTES } from '../lib/nav';
+import { t } from '../i18n';
 import logoHorizontal from '../assets/logo-horizontal.webp';
 
 const LINKS = [
-  { label: 'Reservar', href: '/#reservar' },
-  { label: 'Empresas', href: '/#empresas' },
-  { label: 'Preguntas frecuentes', href: ROUTES.faq },
-  { label: 'Términos y condiciones', href: ROUTES.terms },
-  { label: 'Contacto', href: '/#contacto' },
+  { label: t('footer.book'), href: '/#reservar' },
+  { label: t('footer.empresas'), href: '/#empresas' },
+  { label: t('footer.faq'), href: ROUTES.faq },
+  { label: t('footer.terms'), href: ROUTES.terms },
+  { label: t('footer.contact'), href: '/#contacto' },
 ];
 
 export function Footer() {
@@ -26,7 +27,7 @@ export function Footer() {
             className="mb-3 h-14 w-auto self-start"
           />
           <span className="font-label tracking-[0.1em] text-[#E5E7EB]/60 uppercase">
-            Destinos Travel — Transporte ejecutivo · Lima, Perú
+            {t('footer.tagline')}
           </span>
           <span>
             {COMPANY.legalName} · RUC {COMPANY.ruc}
@@ -34,7 +35,7 @@ export function Footer() {
           <span>{COMPANY.address}</span>
         </div>
 
-        <nav aria-label="Enlaces del pie de página">
+        <nav aria-label={t('footer.aria')}>
           <ul className="flex flex-wrap gap-x-6 gap-y-3">
             {LINKS.map((l) => (
               <li key={l.label}>

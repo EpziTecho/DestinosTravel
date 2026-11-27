@@ -9,9 +9,11 @@
 // al abrirla en grande, y lo leen los lectores de pantalla y Google.
 // La clave es "carpeta/nombre-del-archivo". Si una foto no tiene descripción,
 // usa el texto por defecto de su sección (abajo, en DEFAULTS).
+// Traducciones: src/i18n/locales/<idioma>.js → photoCaptions y photoDefaults.
 // ─────────────────────────────────────────────────────────────────────────────
+import { content } from '../i18n/index.js';
 
-const CAPTIONS = {
+const CAPTIONS = content('photoCaptions', {
   // Experiencia diplomática
   'diplomatico/20261121-01.jpeg': 'Conductor de Destinos Travel en servicio diplomático en APEC 2024',
   'diplomatico/20261121-02.jpeg': 'Conductor de Destinos Travel en servicio diplomático en APEC 2024',
@@ -21,13 +23,13 @@ const CAPTIONS = {
   // Galería
   'galeria/20261121-01.jpeg': 'Destinos Travel en servicio',
   'galeria/20261121-02.jpeg': 'Destinos Travel en servicio',
-};
+});
 
 // Texto que se usa cuando una foto no tiene descripción propia.
-const DEFAULTS = {
+const DEFAULTS = content('photoDefaults', {
   diplomatico: 'Conductor de Destinos Travel en un servicio diplomático',
   galeria: 'Destinos Travel en servicio',
-};
+});
 
 function toPhotos(modules, folder) {
   return Object.entries(modules)

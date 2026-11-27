@@ -132,7 +132,10 @@ export function isPastTime(date, time) {
   return Number.isFinite(pickup) && pickup < Date.now();
 }
 
-export const serviceName =(s) => (s.tag ? `${s.label} (${s.tag})` : s.label);
+// Languages of the website, named in Spanish for the messages the company receives.
+export const CLIENT_LANGUAGES = { es: 'Español', en: 'Inglés', fr: 'Francés', ru: 'Ruso', zh: 'Chino' };
+
+export const serviceName = (s) => (s.tag ? `${s.label} (${s.tag})` : s.label);
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 

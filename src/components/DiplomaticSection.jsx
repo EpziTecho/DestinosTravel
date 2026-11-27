@@ -5,24 +5,10 @@ import { SectionHeading } from './SectionHeading';
 import { ClientsGrid } from './ClientsSection';
 import { PhotoGrid } from './PhotoViewer';
 import { usePhotoViewer } from '../hooks/usePhotoViewer';
+import { t, TITLE_GAP } from '../i18n';
 
-const POINTS = [
-  {
-    icon: UserCheck,
-    title: 'Protocolo',
-    text: 'Trato formal y conductores de traje en cada recojo.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Discreción',
-    text: 'Reserva total sobre pasajeros, rutas y horarios.',
-  },
-  {
-    icon: CalendarClock,
-    title: 'Puntualidad',
-    text: 'Nos ajustamos a agendas oficiales, de día o de noche, todos los días del año.',
-  },
-];
+const ICONS = [UserCheck, ShieldCheck, CalendarClock];
+const POINTS = t('diplomatic.points').map((p, i) => ({ ...p, icon: ICONS[i] }));
 
 export function DiplomaticSection() {
   const [pointsRef, pointsRevealed] = useReveal(0.2);
@@ -31,13 +17,13 @@ export function DiplomaticSection() {
   return (
     <section id="diplomatico" className="bg-[#0B0D0E] px-4 py-24 sm:px-6 md:px-12 md:py-32">
       <SectionHeading
-        kicker="Experiencia diplomática"
+        kicker={t('diplomatic.kicker')}
         title={
           <>
-            Al servicio del <span className="text-[#FFD64B]">cuerpo diplomático.</span>
+            {t('diplomatic.title')}{TITLE_GAP}<span className="text-[#FFD64B]">{t('diplomatic.titleHighlight')}</span>
           </>
         }
-        intro="Hemos trasladado a personal de embajadas e instituciones internacionales en Lima. Ese nivel de exigencia es el estándar con el que atendemos a cada cliente."
+        intro={t('diplomatic.intro')}
       />
 
       {DIPLOMATIC_PHOTOS.length > 0 && (

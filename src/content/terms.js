@@ -1,10 +1,13 @@
 // Términos y condiciones (first draft — the company will keep editing it).
 // Each section: { id, title, items: [string | { text, list: [string] }] }.
 // Rendered by src/pages/TermsPage.jsx at /terminos.
+// Translations: src/i18n/locales/<idioma>.js → terms (same sections and items, same order).
+import { content } from '../i18n/index.js';
 
-export const TERMS_UPDATED = '21 de noviembre de 2026';
+// Last update, as YEAR-MONTH-DAY (shown as "21 de noviembre de 2026").
+export const TERMS_UPDATED = '2026-11-21';
 
-export const TERMS_SECTIONS = [
+export const TERMS_SECTIONS = content('terms', [
   {
     id: 'reservas',
     title: 'Reservas y confirmación',
@@ -164,4 +167,4 @@ export const TERMS_SECTIONS = [
       'Destinos Travel puede actualizar estos términos y condiciones. La versión vigente es la publicada en esta página, con su fecha de actualización.',
     ],
   },
-];
+]);

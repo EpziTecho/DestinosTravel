@@ -3,6 +3,7 @@ import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { Grain } from './Overlays';
 import { WhatsAppButton } from './WhatsAppButton';
+import { t } from '../i18n';
 
 /** Layout for pages other than the home: navbar, title block, content, footer. */
 export function PageShell({ kicker, title, intro, children }) {
@@ -15,7 +16,7 @@ export function PageShell({ kicker, title, intro, children }) {
           href="/"
           className="font-label mb-10 inline-flex items-center gap-2 text-xs tracking-[0.2em] text-[#E5E7EB]/50 uppercase transition-colors hover:text-[#FFD64B]"
         >
-          <ArrowLeft size={14} /> Volver al inicio
+          <ArrowLeft size={14} /> {t('page.back')}
         </a>
         <div className="mb-14 max-w-3xl">
           <p className="font-label animate-blur-fade-up mb-3 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase">{kicker}</p>

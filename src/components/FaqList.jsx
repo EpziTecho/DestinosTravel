@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { ROUTES } from '../lib/nav';
+import { t } from '../i18n';
 
 /** Accordion of questions using native <details>, so it works with keyboard and without JS. */
 export function FaqList({ items }) {
@@ -29,7 +30,7 @@ export function FaqList({ items }) {
                 href={ROUTES.terms}
                 className="mt-3 inline-block text-sm text-[#FFD64B]/90 underline-offset-4 hover:underline"
               >
-                Ver Términos y condiciones
+                {t('faq.termsLink')}
               </a>
             )}
           </div>

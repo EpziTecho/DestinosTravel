@@ -1,8 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
-import { BOOKING_SERVICES } from '../config/bookingServices';
+import { LOCAL_SERVICES } from '../i18n/services';
 import { bookService } from '../lib/nav';
 import { serviceIcon } from './serviceIcons';
+import { t } from '../i18n';
 import { SectionHeading } from './SectionHeading';
 
 // Same services as the booking form, so each card can open it with that service chosen.
@@ -27,9 +28,9 @@ function ServiceCard({ service, index }) {
       <button
         onClick={() => bookService(service.id)}
         className="font-label group flex items-center gap-2 self-start text-sm tracking-[0.06em] text-[#FFD64B] transition-colors hover:text-[#FFE27A]"
-        aria-label={`Reservar: ${service.label}`}
+        aria-label={t('services.bookAria', { name: service.label })}
       >
-        Reservar
+        {t('services.book')}
         <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
       </button>
     </div>
@@ -39,10 +40,10 @@ function ServiceCard({ service, index }) {
 export function ServicesDetail() {
   return (
     <section id="servicios-detalle" className="bg-[#0B0D0E] px-4 py-24 sm:px-6 md:px-12 md:py-32">
-      <SectionHeading kicker="Servicios" title="Un servicio para cada viaje." />
+      <SectionHeading kicker={t('services.kicker')} title={t('services.title')} />
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {BOOKING_SERVICES.map((service, i) => (
+        {LOCAL_SERVICES.map((service, i) => (
           <ServiceCard key={service.id} service={service} index={i} />
         ))}
       </div>

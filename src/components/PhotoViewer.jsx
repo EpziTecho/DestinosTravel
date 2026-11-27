@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
+import { t } from '../i18n';
 
 /**
  * Clickable photo thumbnail. `frame` sets its shape:
@@ -15,7 +16,7 @@ export function PhotoThumb({ photo, index, onOpen, frame = null, className = '' 
       onClick={onOpen}
       className={`${revealed ? 'animate-blur-fade-up' : 'opacity-0'} group block w-full overflow-hidden rounded-2xl border border-[#1F2428] focus-visible:outline-2 focus-visible:outline-[#FFD64B] ${className}`}
       style={{ animationDelay: `${(index % 4) * 90}ms` }}
-      aria-label={`Ver foto: ${photo.alt}`}
+      aria-label={t('photos.view', { alt: photo.alt })}
     >
       <img
         src={photo.src}
@@ -69,7 +70,7 @@ export function PhotoViewer({ photos, index, onClose, onMove }) {
       ref={ref}
       onClose={onClose}
       className="m-0 h-full max-h-none w-full max-w-none overflow-hidden bg-[#0B0D0E]/95 p-0 backdrop:bg-black/80"
-      aria-label="Fotos"
+      aria-label={t('photos.dialog')}
     >
       <div
         className="flex h-full flex-col items-center justify-center gap-4 px-4 py-16"
@@ -88,19 +89,19 @@ export function PhotoViewer({ photos, index, onClose, onMove }) {
 
       {/* Wrappers carry the position: .liquid-glass sets position: relative on the button itself. */}
       <div className="absolute top-4 right-4">
-        <button onClick={() => ref.current.close()} className={navBtn} aria-label="Cerrar">
+        <button onClick={() => ref.current.close()} className={navBtn} aria-label={t('photos.close')}>
           <X size={18} />
         </button>
       </div>
       {many && (
         <>
           <div className="absolute top-1/2 left-3 -translate-y-1/2">
-            <button onClick={() => onMove(-1)} className={navBtn} aria-label="Foto anterior">
+            <button onClick={() => onMove(-1)} className={navBtn} aria-label={t('photos.prev')}>
               <ChevronLeft size={20} />
             </button>
           </div>
           <div className="absolute top-1/2 right-3 -translate-y-1/2">
-            <button onClick={() => onMove(1)} className={navBtn} aria-label="Foto siguiente">
+            <button onClick={() => onMove(1)} className={navBtn} aria-label={t('photos.next')}>
               <ChevronRight size={20} />
             </button>
           </div>

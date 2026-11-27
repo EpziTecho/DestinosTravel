@@ -2,9 +2,13 @@
 
 Ideas acordadas que todavía no se implementan.
 
-## Selector de idioma (después de la v1.0)
+## Idiomas (hecho)
 
-- Un "badge" en la parte superior de la web para cambiar el idioma de los textos.
-- Idiomas: **español (por defecto)**, inglés, francés, ruso y chino.
-- **Cuándo:** recién cuando los textos estén cerrados en la v1.0. Antes no conviene, porque los textos todavía van a cambiar y habría que retraducirlo todo.
-- **Nota técnica:** casi todo el texto ya vive en archivos de contenido (`src/content/faq.js`, `src/content/terms.js`, `src/config/*.js`). Lo que siga escrito dentro de los componentes habrá que pasarlo a esos archivos antes de traducir.
+La web está en español (por defecto), inglés, francés, ruso y chino, con el selector arriba a la derecha.
+
+- **Textos en español:** la interfaz en `src/i18n/es.js`; el contenido largo en `src/content/` (preguntas, términos, clientes, fotos) y los servicios en `src/config/bookingServices.js`.
+- **Traducciones:** `src/i18n/locales/en.js`, `fr.js`, `ru.js` y `zh.js`, con las mismas claves. Lo que falte en una traducción se muestra en español.
+- **Al cambiar un texto en español, hay que cambiarlo también en los cuatro idiomas.** Si se agrega una pregunta o una cláusula, va en la misma posición en cada traducción.
+- Los mensajes que recibe la empresa (WhatsApp de la reserva y correo) siguen en español, con el idioma del cliente.
+- Google indexa la versión en español. Para posicionar cada idioma en Google habría que darle su propia dirección (por ejemplo `/en/`); queda como mejora futura.
+

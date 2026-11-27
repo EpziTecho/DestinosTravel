@@ -4,6 +4,7 @@ import { useScrollScrub } from '../hooks/useScrollScrub';
 import { GridOverlay, Scrim } from './Overlays';
 import { Beat } from './Beat';
 import { ProgressRail } from './ProgressRail';
+import { t, TITLE_GAP } from '../i18n';
 
 // Served from our own domain with a hashed file name, so browsers cache it for good.
 import VIDEO_SRC from '../assets/hero.mp4';
@@ -23,6 +24,12 @@ const HERO_FADE_END = 0.17;
 const LOOP_VIDEO = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 // On phones, rest this long on the last frame before playing again (null = play once and stay).
 const LOOP_PAUSE_MS = null;
+
+/** Kicker, heading, text and specs of a beat (texts in src/i18n). */
+function beat(key) {
+  const b = t(`beats.${key}`);
+  return { kicker: b.kicker, heading: b.heading, sub: b.sub, specs: b.specs.map(([label, value]) => ({ label, value })) };
+}
 
 export function CinematicScroll() {
   const containerRef = useRef(null);
@@ -78,13 +85,13 @@ export function CinematicScroll() {
               style={{ animationDelay: '300ms' }}
             >
               <span className="flex items-center gap-2">
-                <Clock size={14} /> Atención 24/7
+                <Clock size={14} /> {t('hero.support')}
               </span>
               <span className="flex items-center gap-2">
-                <MapPinned size={14} /> Lima, Perú
+                <MapPinned size={14} /> {t('hero.location')}
               </span>
               <span className="flex items-center gap-2">
-                <ShieldCheck size={14} /> Seguro y discreto
+                <ShieldCheck size={14} /> {t('hero.safe')}
               </span>
             </div>
 
@@ -94,7 +101,7 @@ export function CinematicScroll() {
               className="font-label text-video-shadow animate-blur-fade-up mb-4 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase tiny:hidden"
               style={{ animationDelay: '380ms' }}
             >
-              DESTINOS TRAVEL / TRANSPORTE EJECUTIVO
+              {t('hero.kicker')}
             </p>
 
             <h1
@@ -102,15 +109,14 @@ export function CinematicScroll() {
               className="font-display text-video-shadow animate-blur-fade-up text-[clamp(2rem,min(8vw,7.5vh),4.5rem)] leading-[1.05] tracking-[-0.01em] text-[#E5E7EB]"
               style={{ animationDelay: '450ms' }}
             >
-              Su visión dicta el destino, <span className="text-[#FFD64B]">nuestro protocolo asegura el trayecto.</span>
+              {t('hero.title')}{TITLE_GAP}<span className="text-[#FFD64B]">{t('hero.titleHighlight')}</span>
             </h1>
 
             <p
               className="text-video-shadow animate-blur-fade-up mt-5 max-w-xl text-base text-[#E5E7EB]/80 sm:text-lg tiny:hidden"
               style={{ animationDelay: '560ms' }}
             >
-              Transporte ejecutivo y diplomático en Lima: aeropuerto, empresas y viajes fuera de la ciudad. Conductores
-              profesionales, las 24 horas.
+              {t('hero.sub')}
             </p>
 
             <div
@@ -121,14 +127,14 @@ export function CinematicScroll() {
                 onClick={() => scrollToId('#reservar')}
                 className="font-label flex items-center justify-center gap-2 rounded-full bg-[#FFD64B] px-7 py-3 tracking-[0.04em] text-[#0B0D0E]"
               >
-                Reservar traslado
+                {t('hero.book')}
                 <CalendarCheck size={16} />
               </button>
               <button
                 onClick={() => scrollToId('#servicios-detalle')}
                 className="font-label liquid-glass flex items-center justify-center gap-2 rounded-full px-7 py-3 tracking-[0.04em] text-[#E5E7EB]"
               >
-                Ver servicios
+                {t('hero.services')}
                 <ArrowRight size={16} />
               </button>
             </div>
@@ -137,81 +143,40 @@ export function CinematicScroll() {
               className="font-label text-video-shadow animate-blur-fade-up mt-8 flex items-center gap-3 text-[11px] tracking-[0.24em] text-[#E5E7EB]/60 uppercase short:hidden"
               style={{ animationDelay: '680ms' }}
             >
-              Desliza para conocernos
+              {t('hero.scroll')}
               <ChevronsDown size={16} className="animate-gentle-bounce" />
             </div>
           </div>
         </div>
       </div>
 
-      <Beat
-        id="mision"
-        side="left"
-        kicker="Misión"
-        heading="Puntuales, seguros y discretos."
-        sub="Brindar un servicio de transporte ejecutivo seguro, puntual y confortable, destacándonos por la atención personalizada y el compromiso con la excelencia, garantizando confianza y discreción en cada trayecto."
-        specs={[
-          { label: 'Atención', value: '24/7' },
-          { label: 'Vuelos', value: 'con seguimiento' },
-          { label: 'Espera', value: '60 min incluidos' },
-        ]}
-      />
-
-      <Beat
-        id="vision"
-        side="right"
-        kicker="Visión"
-        heading="La primera opción de quien llega al Perú."
-        sub="Ser reconocidos como la empresa de transporte ejecutivo ideal en el Perú y la opción preferida para visitantes extranjeros que llegan a nuestro país."
-        specs={[
-          { label: 'Pago', value: 'al final del traslado' },
-          { label: 'Moneda', value: 'soles o dólares' },
-          { label: 'Comprobante', value: 'factura' },
-        ]}
-      />
-
-      <Beat
-        id="nosotros"
-        side="left"
-        kicker="Nosotros"
-        heading="Experiencia que se nota en cada trayecto."
-        sub="Contamos con una sólida trayectoria en el transporte ejecutivo y diplomático. Un equipo de conductores profesionales y una flota moderna diseñada para brindar comodidad, seguridad y eficiencia."
-        specs={[
-          { label: 'Experiencia', value: 'diplomática' },
-          { label: 'Conductores', value: 'de traje' },
-          { label: 'Flota', value: 'moderna' },
-        ]}
-      />
+      <Beat id="mision" side="left" {...beat('mission')} />
+      <Beat id="vision" side="right" {...beat('vision')} />
+      <Beat id="nosotros" side="left" {...beat('about')} />
 
       <Beat
         id="servicios"
         side="center"
-        kicker="Servicios"
+        {...beat('services')}
         heading={
           <>
-            ¿A dónde te <span className="text-[#FFD64B]">llevamos?</span>
+            {t('beats.services.heading')}{TITLE_GAP}<span className="text-[#FFD64B]">{t('beats.services.headingHighlight')}</span>
           </>
         }
-        sub="Diez servicios, un mismo estándar: puntualidad, seguridad y atención personalizada las 24 horas."
-        specs={[
-          { label: 'Servicios', value: '10' },
-          { label: 'Atención', value: '24/7' },
-          { label: 'Cobertura', value: 'Lima y provincias' },
-        ]}
         cta={
           <>
             <button
               onClick={() => scrollToId('#servicios-detalle')}
               className="font-label flex items-center justify-center gap-2 rounded-full bg-[#FFD64B] px-7 py-3 tracking-[0.04em] text-[#0B0D0E]"
             >
-              Ver servicios
+              {t('hero.services')}
               <ArrowRight size={16} />
             </button>
             <button
               onClick={() => scrollToId('#reservar')}
               className="font-label liquid-glass flex items-center justify-center gap-2 rounded-full px-7 py-3 tracking-[0.04em] text-[#E5E7EB]"
             >
-              Reservar traslado
+              {t('hero.book')}
               <CalendarCheck size={16} />
             </button>
           </>

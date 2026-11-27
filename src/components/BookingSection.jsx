@@ -12,7 +12,8 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
-import { WHATSAPP_NUMBER } from '../config/socialLinks';
+import { WHATSAPP_NUMBER, OPERATOR_MESSAGE } from '../config/socialLinks';
+import { WhatsAppGlyph } from './WhatsAppGlyph';
 import { ROUTES, BOOK_SERVICE_EVENT } from '../lib/nav';
 import {
   BOOKING_SERVICES,
@@ -29,9 +30,13 @@ import {
   hides,
   vehicleOptions,
   travelSummary,
+  CLIENT_LANGUAGES,
 } from '../config/bookingServices';
+import { LANG, LOCALE, t, tn, rich, joinList, formatDay, TITLE_GAP } from '../i18n';
+import { LOCAL_SERVICES, localServiceName, vehicleLabel } from '../i18n/services';
 
-const SERVICES = BOOKING_SERVICES.map((s) => ({ ...s, icon: serviceIcon(s.id) }));
+// Shown in the visitor's language; messages to the company use the Spanish originals (BOOKING_SERVICES).
+const SERVICES = LOCAL_SERVICES.map((s) => ({ ...s, icon: serviceIcon(s.id) }));
 
 const EMPTY_FORM = {
   service: null,
@@ -68,8 +73,20 @@ function normalizeTimePart(v, max) {
 
 
 const TIME_PARTS = {
-  hour: { max: 23, options: HOURS, label: 'Hora (00 a 23)', placeholder: 'HH', listLabel: 'Horas' },
-  minute: { max: 59, options: MINUTES, label: 'Minutos (00 a 59)', placeholder: 'MM', listLabel: 'Minutos' },
+  hour: {
+    max: 23,
+    options: HOURS,
+    label: t('booking.hourLabel'),
+    placeholder: t('booking.hourPlaceholder'),
+    listLabel: t('booking.hourList'),
+  },
+  minute: {
+    max: 59,
+    options: MINUTES,
+    label: t('booking.minuteLabel'),
+    placeholder: t('booking.minutePlaceholder'),
+    listLabel: t('booking.minuteList'),
+  },
 };
 
 /**
@@ -177,9 +194,11 @@ function TimePicker({ hour, minute, onHour, onMinute, highlight, describedBy }) 
   );
 }
 
-function buildMessage(f, service) {
+/** WhatsApp booking message. Always in Spanish (it goes to the company), with the customer's language. */
+function buildMessage(f, localized) {
+  const service = BOOKING_SERVICES.find((s) => s.id === localized.id);
   const travel = travelSummary(service, f);
-  const labels = routeLabels(service);
+  const labels = service.fieldLabels ?? SPANISH_ROUTE_LABELS;
   const lines = [
     'Hola, vengo de la página web de Destinos Travel y quiero reservar un servicio:',
     '',
@@ -195,13 +214,26 @@ function buildMessage(f, service) {
   if (f.email.trim()) lines.push(`• Correo: ${f.email.trim()}`);
   if (f.phone.trim()) lines.push(`• Teléfono: ${f.phone.trim()}`);
   if (f.notes.trim()) lines.push(`• Notas: ${f.notes.trim()}`);
+  if (LANG !== 'es') lines.push(`• Idioma del cliente: ${CLIENT_LANGUAGES[LANG]}`);
   if (isTooSoon(f.date, f.time)) lines.push('', SHORT_NOTICE_NOTE);
   lines.push('', 'Quedo atento a la confirmación y la tarifa. ¡Gracias!');
   return lines.join('\n');
 }
 
-const DEFAULT_ROUTE_LABELS = { from: 'Te recogemos en', to: 'Te llevamos a' };
+const SPANISH_ROUTE_LABELS = { from: 'Te recogemos en', to: 'Te llevamos a' };
+const DEFAULT_ROUTE_LABELS = { from: t('booking.routeFrom'), to: t('booking.routeTo') };
 const routeLabels = (service) => service?.fieldLabels ?? DEFAULT_ROUTE_LABELS;
+
+/** "2 pasajeros · 1 maleta de 23 kg", in the visitor's language ('' when the service asks for neither). */
+function travelText(service, { passengers, bags, handBags }) {
+  const parts = [];
+  if (!hides(service, 'passengers')) parts.push(tn('booking.passengersCount', passengers));
+  if (!hides(service, 'bags')) parts.push(tn('booking.bagsCount', bags));
+  if (!hides(service, 'handBags') && handBags > 0) parts.push(tn('booking.handBagsCount', handBags));
+  return parts.join(' · ');
+}
+
+const shortNoticeNote = t('booking.shortNotice', { hours: MIN_NOTICE_MINUTES / 60 });
 
 const inputClass =
   'w-full rounded-xl border border-[#1F2428] bg-[#0B0D0E]/70 px-4 py-3 text-[15px] text-[#E5E7EB] placeholder:text-[#E5E7EB]/30 outline-none transition-colors focus:border-[#FFD64B]/60';
@@ -244,7 +276,7 @@ function Stepper({ label, note, value, min, max, onChange }) {
           type="button"
           onClick={() => onChange(Math.max(min, value - 1))}
           disabled={value <= min}
-          aria-label={`Quitar ${label.toLowerCase()}`}
+          aria-label={t('booking.decrease', { label: label.toLocaleLowerCase(LOCALE) })}
           className="flex h-8 w-8 items-center justify-center rounded-full border border-[#FFD64B]/30 text-[#FFD64B] transition-opacity disabled:opacity-25"
         >
           <Minus size={14} />
@@ -264,7 +296,7 @@ function Stepper({ label, note, value, min, max, onChange }) {
           type="button"
           onClick={() => onChange(Math.min(max, value + 1))}
           disabled={value >= max}
-          aria-label={`Agregar ${label.toLowerCase()}`}
+          aria-label={t('booking.increase', { label: label.toLocaleLowerCase(LOCALE) })}
           className="flex h-8 w-8 items-center justify-center rounded-full border border-[#FFD64B]/30 text-[#FFD64B] transition-opacity disabled:opacity-25"
         >
           <Plus size={14} />
@@ -276,7 +308,7 @@ function Stepper({ label, note, value, min, max, onChange }) {
 
 function VehiclePicker({ options, value, onChange }) {
   return (
-    <div role="radiogroup" aria-label="Tipo de vehículo" className="flex flex-wrap gap-2.5">
+    <div role="radiogroup" aria-label={t('booking.vehicleType')} className="flex flex-wrap gap-2.5">
       {options.map((v) => {
         const active = value === v;
         return (
@@ -292,7 +324,7 @@ function VehiclePicker({ options, value, onChange }) {
                 : 'border-[#1F2428] bg-[#0B0D0E]/70 text-[#E5E7EB]/80 hover:border-[#FFD64B]/40'
             }`}
           >
-            {v}
+            {vehicleLabel(v)}
           </button>
         );
       })}
@@ -302,9 +334,9 @@ function VehiclePicker({ options, value, onChange }) {
 
 /** Step 2 title, matching what the service asks for. */
 function whenTitle(service) {
-  if (vehicleOptions(service)) return '¿Cuándo y en qué vehículo?';
-  if (hides(service, 'passengers')) return '¿Para cuándo?';
-  return '¿Cuándo y cuántos viajan?';
+  if (vehicleOptions(service)) return t('booking.whenVehicle');
+  if (hides(service, 'passengers')) return t('booking.whenOnly');
+  return t('booking.whenPeople');
 }
 
 function RouteInput({ value, locked, onChange }) {
@@ -316,7 +348,7 @@ function RouteInput({ value, locked, onChange }) {
         onChange={onChange}
         readOnly={locked}
         aria-readonly={locked}
-        placeholder="Dirección, hotel u oficina"
+        placeholder={t('booking.addressPlaceholder')}
         className={`${inputClass} ${locked ? 'cursor-not-allowed border-[#FFD64B]/25 pr-10 text-[#FFD64B]/90' : ''}`}
       />
       {locked && (
@@ -334,7 +366,7 @@ function SummaryRow({ label, value }) {
   return (
     <div className="flex flex-col gap-1 border-b border-[#1F2428] py-3 last:border-b-0">
       <span className="font-label text-[10px] tracking-[0.25em] text-[#E5E7EB]/40 uppercase">{label}</span>
-      <span className={`text-[15px] ${value ? 'text-[#E5E7EB]' : 'text-[#E5E7EB]/30 italic'}`}>{value || 'sin elegir'}</span>
+      <span className={`text-[15px] ${value ? 'text-[#E5E7EB]' : 'text-[#E5E7EB]/30 italic'}`}>{value || t('booking.notChosen')}</span>
     </div>
   );
 }
@@ -398,28 +430,28 @@ export function BookingSection() {
   }, [status]);
 
   const missing = [];
-  if (!service) missing.push('elegir el tipo de traslado');
+  if (!service) missing.push(t('booking.missingService'));
   // Peru-time minimum, recomputed each render so it rolls over at midnight in Lima.
   const minDate = minPickupDate();
   const tooSoon = Boolean(form.date) && form.date < minDate;
-  if (!form.date || !time) missing.push('el día y la hora');
-  else if (tooSoon) missing.push('un día de recojo que no haya pasado');
+  if (!form.date || !time) missing.push(t('booking.missingWhen'));
+  else if (tooSoon) missing.push(t('booking.missingPastDay'));
   // A time that already passed is blocked; less than MIN_NOTICE_MINUTES ahead is accepted,
   // subject to availability (Peru time).
   const hasDateTime = !tooSoon && Boolean(form.date) && Boolean(time);
   const timePast = hasDateTime && isPastTime(form.date, time);
   const shortNotice = hasDateTime && !timePast && isTooSoon(form.date, time);
-  if (timePast) missing.push('una hora que no haya pasado');
-  if (!form.from.trim() || !form.to.trim()) missing.push('la ruta');
+  if (timePast) missing.push(t('booking.missingPastTime'));
+  if (!form.from.trim() || !form.to.trim()) missing.push(t('booking.missingRoute'));
   const ready = missing.length === 0;
 
   // The direct booking also needs a way to reach the customer.
   const email = form.email.trim();
   const phone = form.phone.trim();
   const contactMissing = [];
-  if (!email && !phone) contactMissing.push('un correo o un teléfono');
-  if (email && !EMAIL_RE.test(email)) contactMissing.push('un correo válido');
-  if (phone && !isValidPhone(phone)) contactMissing.push('un teléfono válido');
+  if (!email && !phone) contactMissing.push(t('booking.missingContact'));
+  if (email && !EMAIL_RE.test(email)) contactMissing.push(t('booking.missingEmail'));
+  if (phone && !isValidPhone(phone)) contactMissing.push(t('booking.missingPhone'));
   const directMissing = [...missing, ...contactMissing];
   const directReady = directMissing.length === 0;
 
@@ -448,14 +480,16 @@ export function BookingSection() {
           passengers: hides(service, 'passengers') ? 0 : form.passengers,
           bags: hides(service, 'bags') ? 0 : form.bags,
           handBags: hides(service, 'handBags') ? 0 : form.handBags,
+          lang: LANG,
         }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) throw new Error(data.error || 'No pudimos enviar tu reserva.');
+      // The API answers in Spanish; other languages get a general message instead.
+      if (!res.ok || !data.ok) throw new Error((LANG === 'es' && data.error) || t('booking.sendFailed'));
       setBookingRef(data.id);
       setStatus('sent');
     } catch (err) {
-      setServerError(err.message === 'Failed to fetch' ? 'Revisa tu conexión a internet.' : err.message);
+      setServerError(err instanceof TypeError ? t('booking.offline') : err.message);
       setStatus('error');
     }
   }
@@ -471,45 +505,45 @@ export function BookingSection() {
   let hint;
   let hintAlert = false;
   if (status === 'error') {
-    hint = `${serverError} Puedes intentarlo de nuevo o reservar por WhatsApp.`;
+    hint = t('booking.hintError', { error: serverError });
     hintAlert = true;
   } else if (attempted === 'direct' && !directReady) {
-    hint = `Falta ${directMissing.join(', ')}.`;
+    hint = t('booking.hintMissing', { list: joinList(directMissing) });
     hintAlert = true;
   } else if (attempted === 'whatsapp' && !ready) {
-    hint = `Falta ${missing.join(', ')}.`;
+    hint = t('booking.hintMissing', { list: joinList(missing) });
     hintAlert = true;
   } else if (shortNotice) {
-    hint = SHORT_NOTICE_NOTE;
+    hint = shortNoticeNote;
     hintAlert = true;
   } else if (directReady) {
-    hint = 'Te confirmamos la reserva y la tarifa antes del viaje.';
+    hint = t('booking.hintReady');
   } else {
-    hint = 'Sin compromiso: te confirmamos la tarifa antes del viaje.';
+    hint = t('booking.hintIdle');
   }
 
   const route = form.from.trim() || form.to.trim() ? `${form.from.trim() || '…'} → ${form.to.trim() || '…'}` : '';
-  const when = form.date ? `${formatDate(form.date)}${time ? `, ${time}` : ''}` : '';
+  const when = form.date ? `${formatDay(form.date)}${time ? `, ${time}` : ''}` : '';
+  const travel = travelText(service, form);
 
   return (
     <section id="reservar" className="bg-[#0B0D0E] px-4 py-24 sm:px-6 md:px-12 md:py-32">
       <div ref={headRef} className="mb-14 max-w-2xl">
         <p className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-label mb-3 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase`}>
-          Reserva en línea
+          {t('booking.kicker')}
         </p>
         <div className={`rule mb-5 w-24 ${headRevealed ? 'animate-draw-line' : ''}`} style={{ animationDelay: '120ms' }} />
         <h2
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-display text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl`}
           style={{ animationDelay: '200ms' }}
         >
-          Reserva tu traslado <span className="text-[#FFD64B]">en un minuto.</span>
+          {t('booking.title')}{TITLE_GAP}<span className="text-[#FFD64B]">{t('booking.titleHighlight')}</span>
         </h2>
         <p
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} mt-4 max-w-lg text-base text-[#E5E7EB]/60`}
           style={{ animationDelay: '320ms' }}
         >
-          Cuéntanos qué traslado necesitas y envíanos la reserva desde aquí o por WhatsApp. Te confirmamos la reserva
-          y la tarifa antes del viaje, a cualquier hora.
+          {t('booking.intro')}
         </p>
       </div>
 
@@ -517,8 +551,8 @@ export function BookingSection() {
         <div className="flex flex-col gap-6">
           {/* 1 — Service */}
           <fieldset className="liquid-glass rounded-2xl p-5 sm:p-6">
-            <legend className="sr-only">Tipo de traslado</legend>
-            <StepHeader n={1} title="¿Qué traslado necesitas?" />
+            <legend className="sr-only">{t('booking.legendService')}</legend>
+            <StepHeader n={1} title={t('booking.stepService')} />
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-3">
               {SERVICES.map((s) => {
                 const Icon = s.icon;
@@ -550,10 +584,10 @@ export function BookingSection() {
 
           {/* 2 — When & how many */}
           <fieldset className="liquid-glass rounded-2xl p-5 sm:p-6">
-            <legend className="sr-only">Día, hora y pasajeros</legend>
+            <legend className="sr-only">{t('booking.legendWhen')}</legend>
             <StepHeader n={2} title={whenTitle(service)} />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="Día del recojo">
+              <Field label={t('booking.date')}>
                 <input
                   type="date"
                   min={minDate}
@@ -564,10 +598,10 @@ export function BookingSection() {
                   className={`${inputClass} ${tooSoon ? 'border-[#FFD64B]/70' : ''}`}
                 />
                 {tooSoon && <span id="booking-date-help" className="text-xs text-[#FFD64B]">
-                  Esa fecha ya pasó. Elige hoy o un día posterior (hora de Perú).
+                  {t('booking.datePast')}
                 </span>}
               </Field>
-              <Field label="Hora del recojo">
+              <Field label={t('booking.time')}>
                 <TimePicker
                   hour={form.hour}
                   minute={form.minute}
@@ -581,22 +615,22 @@ export function BookingSection() {
                   className={`text-xs ${timePast || shortNotice ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/40'}`}
                 >
                   {timePast
-                    ? 'Esa hora ya pasó (hora de Perú).'
+                    ? t('booking.timePast')
                     : shortNotice
-                      ? SHORT_NOTICE_NOTE
-                      : `Reserva con ${MIN_NOTICE_MINUTES / 60} horas de anticipación. Con menos, queda sujeta a disponibilidad.`}
+                      ? shortNoticeNote
+                      : t('booking.timeHint', { hours: MIN_NOTICE_MINUTES / 60 })}
                 </span>
               </Field>
               {!hides(service, 'passengers') && (
-                <Stepper label="Pasajeros" value={form.passengers} {...LIMITS.passengers} onChange={setByHand('passengers')} />
+                <Stepper label={t('booking.passengers')} value={form.passengers} {...LIMITS.passengers} onChange={setByHand('passengers')} />
               )}
               {!hides(service, 'bags') && (
-                <Stepper label="Maletas" note="De hasta 23 kg" value={form.bags} {...LIMITS.bags} onChange={setByHand('bags')} />
+                <Stepper label={t('booking.bags')} note={t('booking.bagsNote')} value={form.bags} {...LIMITS.bags} onChange={setByHand('bags')} />
               )}
               {!hides(service, 'handBags') && (
                 <Stepper
-                  label="Maletas de mano"
-                  note="De hasta 10 kg"
+                  label={t('booking.handBags')}
+                  note={t('booking.handBagsNote')}
                   value={form.handBags}
                   {...LIMITS.handBags}
                   onChange={setByHand('handBags')}
@@ -604,7 +638,7 @@ export function BookingSection() {
               )}
               {vehicleOptions(service) && (
                 <div className="sm:col-span-2">
-                  <Field label="Tipo de vehículo">
+                  <Field label={t('booking.vehicleType')}>
                     <VehiclePicker options={vehicleOptions(service)} value={form.vehicle} onChange={set('vehicle')} />
                   </Field>
                 </div>
@@ -614,8 +648,8 @@ export function BookingSection() {
 
           {/* 3 — Route */}
           <fieldset className="liquid-glass rounded-2xl p-5 sm:p-6">
-            <legend className="sr-only">Ruta y datos</legend>
-            <StepHeader n={3} title="¿Desde dónde y hasta dónde?" />
+            <legend className="sr-only">{t('booking.legendRoute')}</legend>
+            <StepHeader n={3} title={t('booking.stepRoute')} />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label={routeLabels(service).from}>
                 <RouteInput value={form.from} locked={Boolean(service?.from)} onChange={setFromEvent('from')} />
@@ -624,40 +658,40 @@ export function BookingSection() {
                 <RouteInput value={form.to} locked={Boolean(service?.to)} onChange={setFromEvent('to')} />
               </Field>
               {isAirport && (
-                <Field label="N.° de vuelo (opcional)">
+                <Field label={t('booking.flight')}>
                   <input
                     type="text"
                     value={form.flight}
                     onChange={setFromEvent('flight')}
-                    placeholder="Ej. LA2047"
+                    placeholder={t('booking.flightPlaceholder')}
                     className={inputClass}
                   />
                 </Field>
               )}
               <div className={isAirport ? '' : 'sm:col-span-2'}>
-                <Field label="Tu nombre (opcional)">
+                <Field label={t('booking.name')}>
                   <input
                     type="text"
                     autoComplete="name"
                     value={form.name}
                     onChange={setFromEvent('name')}
-                    placeholder="Para el cartel de recepción"
+                    placeholder={t('booking.namePlaceholder')}
                     className={inputClass}
                   />
                 </Field>
               </div>
-              <Field label="Tu correo">
+              <Field label={t('booking.email')}>
                 <input
                   type="email"
                   autoComplete="email"
                   inputMode="email"
                   value={form.email}
                   onChange={setFromEvent('email')}
-                  placeholder="nombre@correo.com"
+                  placeholder={t('booking.emailPlaceholder')}
                   className={inputClass}
                 />
               </Field>
-              <Field label="Tu teléfono o WhatsApp">
+              <Field label={t('booking.phone')}>
                 <input
                   type="tel"
                   autoComplete="tel"
@@ -668,7 +702,7 @@ export function BookingSection() {
                 />
               </Field>
               <p className="-mt-2 text-xs text-[#E5E7EB]/40 sm:col-span-2">
-                Para reservar desde aquí necesitamos al menos uno de los dos, para confirmarte el traslado.
+                {t('booking.contactHint')}
               </p>
               {/* Honeypot: hidden from people and screen readers; bots tend to fill it. */}
               <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -678,12 +712,12 @@ export function BookingSection() {
                 </label>
               </div>
               <div className="sm:col-span-2">
-                <Field label="Notas (opcional)">
+                <Field label={t('booking.notes')}>
                   <textarea
                     rows={2}
                     value={form.notes}
                     onChange={setFromEvent('notes')}
-                    placeholder={service?.notesHint ?? "Silla para bebé, paradas, equipaje especial…"}
+                    placeholder={service?.notesHint ?? t('booking.notesPlaceholder')}
                     className={`${inputClass} resize-none`}
                   />
                 </Field>
@@ -695,28 +729,29 @@ export function BookingSection() {
         {/* Summary */}
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="liquid-glass rounded-2xl p-5 sm:p-6">
-            <p className="font-label mb-2 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase">Tu traslado</p>
-            <SummaryRow label="Servicio" value={service && serviceName(service)} />
-            <SummaryRow label="Día y hora" value={when} />
-            {travelSummary(service, form) && <SummaryRow label="Viajan" value={travelSummary(service, form)} />}
-            {vehicleOptions(service) && <SummaryRow label="Vehículo" value={form.vehicle} />}
-            <SummaryRow label="Ruta" value={route} />
+            <p className="font-label mb-2 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase">{t('booking.summary')}</p>
+            <SummaryRow label={t('booking.sumService')} value={service && localServiceName(service)} />
+            <SummaryRow label={t('booking.sumWhen')} value={when} />
+            {travel && <SummaryRow label={t('booking.sumTravel')} value={travel} />}
+            {vehicleOptions(service) && <SummaryRow label={t('booking.sumVehicle')} value={vehicleLabel(form.vehicle)} />}
+            <SummaryRow label={t('booking.sumRoute')} value={route} />
 
             {status === 'sent' ? (
               <div className="mt-5 flex flex-col items-center gap-2 rounded-xl border border-[#FFD64B]/30 bg-[#FFD64B]/5 p-5 text-center" role="status">
                 <CircleCheck size={28} className="text-[#FFD64B]" />
-                <p className="font-display text-lg text-[#E5E7EB]">¡Reserva recibida!</p>
+                <p className="font-display text-lg text-[#E5E7EB]">{t('booking.sentTitle')}</p>
                 <p className="text-sm text-[#E5E7EB]/65">
-                  Tu código es <strong className="text-[#FFD64B]">{bookingRef}</strong>. Te escribiremos
-                  {phone && email ? ' por WhatsApp o correo' : phone ? ' por WhatsApp' : ' por correo'} para confirmar
-                  la reserva y la tarifa. Los datos de tu conductor te llegan hasta 30 minutos antes del traslado.
+                  {rich('booking.sentText', {
+                    ref: <strong className="text-[#FFD64B]">{bookingRef}</strong>,
+                    via: t(phone && email ? 'booking.viaBoth' : phone ? 'booking.viaPhone' : 'booking.viaEmail'),
+                  })}
                 </p>
                 <button
                   type="button"
                   onClick={resetForm}
                   className="font-label mt-2 text-sm tracking-[0.04em] text-[#FFD64B] underline-offset-4 hover:underline"
                 >
-                  Hacer otra reserva
+                  {t('booking.again')}
                 </button>
               </div>
             ) : (
@@ -729,7 +764,7 @@ export function BookingSection() {
                   } disabled:cursor-wait`}
                 >
                   {status === 'sending' ? <Loader2 size={17} className="animate-spin" /> : <Send size={16} />}
-                  {status === 'sending' ? 'Enviando…' : 'Enviar reserva'}
+                  {status === 'sending' ? t('booking.sending') : t('booking.send')}
                 </button>
                 <button
                   type="button"
@@ -737,28 +772,43 @@ export function BookingSection() {
                   className="font-label liquid-glass mt-3 flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 tracking-[0.04em] text-[#E5E7EB]"
                 >
                   <MessageCircle size={17} className="text-[#FFD64B]" />
-                  Reservar por WhatsApp
+                  {t('booking.whatsapp')}
                 </button>
 
                 <p className={`mt-3 text-center text-sm ${hintAlert ? 'text-[#FFD64B]' : 'text-[#E5E7EB]/45'}`} aria-live="polite">
                   {hint}
                 </p>
                 <p className="mt-2 text-center text-xs text-[#E5E7EB]/35">
-                  Al reservar aceptas los{' '}
-                  <a href={ROUTES.terms} className="text-[#E5E7EB]/60 underline underline-offset-2 hover:text-[#FFD64B]">
-                    Términos y condiciones
-                  </a>
-                  .
+                  {rich('booking.acceptTerms', {
+                    terms: (
+                      <a href={ROUTES.terms} className="text-[#E5E7EB]/60 underline underline-offset-2 hover:text-[#FFD64B]">
+                        {t('booking.termsLink')}
+                      </a>
+                    ),
+                  })}
                 </p>
+
+                <div className="mt-5 border-t border-[#1F2428] pt-4 text-center">
+                  <p className="mb-2 text-xs text-[#E5E7EB]/45">{t('booking.operatorPrompt')}</p>
+                  <a
+                    href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(OPERATOR_MESSAGE)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-label flex w-full items-center justify-center gap-2 rounded-full border border-[#FFD64B]/40 px-6 py-3 text-sm tracking-[0.04em] text-[#FFD64B] transition-colors hover:bg-[#FFD64B]/10"
+                  >
+                    <WhatsAppGlyph size={16} />
+                    {t('booking.operator')}
+                  </a>
+                </div>
               </>
             )}
 
             <div className="mt-5 flex flex-col gap-2 border-t border-[#1F2428] pt-4 text-sm text-[#E5E7EB]/55">
               <span className="flex items-center gap-2">
-                <Clock size={14} className="text-[#FFD64B]" /> Atendemos las 24 horas, todos los días
+                <Clock size={14} className="text-[#FFD64B]" /> {t('booking.allDay')}
               </span>
               <span className="flex items-start gap-2">
-                <CalendarCheck size={14} className="mt-0.5 shrink-0 text-[#FFD64B]" /> Primero te confirmamos la reserva; luego, los datos de tu conductor
+                <CalendarCheck size={14} className="mt-0.5 shrink-0 text-[#FFD64B]" /> {t('booking.confirmFlow')}
               </span>
             </div>
           </div>

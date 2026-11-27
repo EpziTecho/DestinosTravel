@@ -38,7 +38,8 @@ body {
 }
 
 .font-display {
-  font-family: 'Cinzel', serif;
+  /* Forum only loads for Russian: it draws the Cyrillic letters Cinzel lacks. */
+  font-family: 'Cinzel', 'Forum', serif;
   font-weight: 500;
 }
 

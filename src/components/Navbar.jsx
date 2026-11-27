@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import logoHorizontal from '../assets/logo-horizontal.webp';
 import { goToSection } from '../lib/nav';
+import { t } from '../i18n';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 // Same order as the sections on the page, so jumping through the menu always moves the same way.
 const LINKS = [
-  { label: 'Nosotros', href: '#nosotros' },
-  { label: 'Servicios', href: '#servicios' },
-  { label: 'Reservar', href: '#reservar' },
-  { label: 'Empresas', href: '#empresas' },
-  { label: 'Preguntas', href: '#preguntas' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: t('nav.nosotros'), href: '#nosotros' },
+  { label: t('nav.servicios'), href: '#servicios' },
+  { label: t('nav.reservar'), href: '#reservar' },
+  { label: t('nav.empresas'), href: '#empresas' },
+  { label: t('nav.preguntas'), href: '#preguntas' },
+  { label: t('nav.contacto'), href: '#contacto' },
 ];
 
 export function Navbar() {
@@ -47,20 +49,22 @@ export function Navbar() {
           ))}
         </div>
 
-        <button
-          onClick={() => goToSection('#reservar')}
-          className="font-label liquid-glass animate-blur-fade-up hidden shrink-0 items-center gap-2 rounded-full px-5 py-2 text-sm tracking-[0.04em] whitespace-nowrap text-[#FFD64B] lg:flex"
-          style={{ animationDelay: '300ms' }}
-        >
-          Reservar traslado
-        </button>
+        <div className="animate-blur-fade-up flex shrink-0 items-center gap-2 xl:gap-3" style={{ animationDelay: '300ms' }}>
+          <LanguageSwitcher />
 
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="liquid-glass animate-blur-fade-up flex h-10 w-10 items-center justify-center rounded-full lg:hidden"
-          style={{ animationDelay: '300ms' }}
-          aria-label="Abrir menú"
-        >
+          {/* From 1280 px: below that the row is full, and "Reservar" is already in the links. */}
+          <button
+            onClick={() => goToSection('#reservar')}
+            className="font-label liquid-glass hidden shrink-0 items-center gap-2 rounded-full px-5 py-2 text-sm tracking-[0.04em] whitespace-nowrap text-[#FFD64B] xl:flex"
+          >
+            {t('nav.cta')}
+          </button>
+
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="liquid-glass flex h-10 w-10 items-center justify-center rounded-full lg:hidden"
+            aria-label={t('nav.openMenu')}
+          >
           <Menu
             size={18}
             className={`absolute text-[#E5E7EB] transition-all duration-500 ${open ? 'rotate-180 scale-50 opacity-0' : 'rotate-0 scale-100 opacity-100'}`}
@@ -69,7 +73,8 @@ export function Navbar() {
             size={18}
             className={`absolute text-[#E5E7EB] transition-all duration-500 ${open ? 'rotate-0 scale-100 opacity-100' : '-rotate-180 scale-50 opacity-0'}`}
           />
-        </button>
+          </button>
+        </div>
       </nav>
 
       <div

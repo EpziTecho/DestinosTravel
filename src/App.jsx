@@ -14,8 +14,16 @@ import { WhatsAppButton } from './components/WhatsAppButton';
 import { FaqPage } from './pages/FaqPage';
 import { TermsPage } from './pages/TermsPage';
 import { ROUTES } from './lib/nav';
+import { LANG, t } from './i18n';
 
 function HomePage() {
+  // index.html carries the Spanish title and description (what Google reads); other languages swap them.
+  useEffect(() => {
+    if (LANG === 'es') return;
+    document.title = t('meta.title');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', t('meta.description'));
+  }, []);
+
   // Arriving from another page at /#section: jump there once the sections exist.
   useEffect(() => {
     const { hash } = window.location;

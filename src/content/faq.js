@@ -3,9 +3,14 @@
 //  - `list`           → optional bullet points shown after the answer.
 //  - `terms: true`    → adds a "Ver Términos y condiciones" link.
 // The full list lives at /preguntas-frecuentes.
+// `id` is the group's link anchor (/preguntas-frecuentes#reservas); keep it when renaming the title.
+// Translations: src/i18n/locales/<idioma>.js → faq (same order).
 
-export const FAQ_GROUPS = [
+import { content } from '../i18n/index.js';
+
+export const FAQ_GROUPS = content('faq', [
   {
+    id: 'reservas',
     title: 'Reservas',
     items: [
       {
@@ -31,6 +36,7 @@ export const FAQ_GROUPS = [
     ],
   },
   {
+    id: 'en-el-aeropuerto',
     title: 'En el aeropuerto',
     items: [
       {
@@ -56,6 +62,7 @@ export const FAQ_GROUPS = [
     ],
   },
   {
+    id: 'vehiculos-y-equipaje',
     title: 'Vehículos y equipaje',
     items: [
       {
@@ -78,6 +85,7 @@ export const FAQ_GROUPS = [
     ],
   },
   {
+    id: 'pagos-y-comprobantes',
     title: 'Pagos y comprobantes',
     items: [
       {
@@ -98,6 +106,7 @@ export const FAQ_GROUPS = [
     ],
   },
   {
+    id: 'horarios-y-destinos',
     title: 'Horarios y destinos',
     items: [
       {
@@ -117,6 +126,7 @@ export const FAQ_GROUPS = [
     ],
   },
   {
+    id: 'empresas-y-hoteles',
     title: 'Empresas y hoteles',
     items: [
       {
@@ -130,7 +140,7 @@ export const FAQ_GROUPS = [
       },
     ],
   },
-];
+]);
 
 export const FEATURED_FAQ = FAQ_GROUPS.flatMap((g) => g.items.filter((i) => i.featured));
 export const FAQ_COUNT = FAQ_GROUPS.reduce((n, g) => n + g.items.length, 0);

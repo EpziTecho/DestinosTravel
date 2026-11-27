@@ -1,13 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { t } from '../i18n';
 
-const BEATS = [
-  // Switch points between beats (progress 0–1 through the hero section).
-  { max: 0.12, label: 'Inicio' },
-  { max: 0.44, label: '01 · Misión' },
-  { max: 0.69, label: '02 · Visión' },
-  { max: 0.94, label: '03 · Nosotros' },
-  { max: 1.01, label: '04 · Servicios' },
-];
+// Switch points between beats (progress 0–1 through the hero section); labels in src/i18n.
+const LABELS = t('rail');
+const BEATS = [0.12, 0.44, 0.69, 0.94, 1.01].map((max, i) => ({ max, label: LABELS[i] }));
 
 function labelFor(progress) {
   return BEATS.find((b) => progress <= b.max)?.label ?? BEATS[BEATS.length - 1].label;
@@ -38,7 +34,7 @@ export const ProgressRail = forwardRef(function ProgressRail(_, ref) {
         ref={labelRef}
         className="font-label max-w-[10rem] rotate-0 text-right text-[10px] tracking-[0.25em] text-[#E5E7EB]/45 uppercase [writing-mode:vertical-rl]"
       >
-        Inicio
+        {LABELS[0]}
       </span>
     </div>
   );

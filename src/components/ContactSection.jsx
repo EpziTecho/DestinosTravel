@@ -1,30 +1,30 @@
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
 import { COMPANY, telHref, waHref } from '../config/company';
-import { WHATSAPP_MESSAGE } from '../config/socialLinks';
+import { t, TITLE_GAP } from '../i18n';
 import { WhatsAppGlyph } from './WhatsAppGlyph';
 
 const CONTACT = [
   {
     icon: Mail,
-    label: 'Email',
+    label: t('contact.email'),
     lines: [COMPANY.email],
-    note: 'Escríbenos para solicitar tu servicio',
+    note: t('contact.emailNote'),
     href: `mailto:${COMPANY.email}`,
   },
   {
     icon: Phone,
-    label: 'Teléfonos',
+    label: t('contact.phones'),
     lines: COMPANY.phones,
     // Each number is its own call link, with a WhatsApp button beside it.
     phones: true,
-    note: 'Atención 24/7 todos los días',
+    note: t('contact.phonesNote'),
   },
   {
     icon: MapPin,
-    label: 'Ubicación',
+    label: t('contact.location'),
     lines: ['Jr. Puerto Esperanza 419', 'San Martín de Porres, Lima'],
-    note: 'Cobertura nacional',
+    note: t('contact.locationNote'),
     // Map link hidden for now; to bring it back: note 'Cobertura nacional · Ver en el mapa',
     // href: COMPANY.mapsUrl, external: true.
   },
@@ -38,14 +38,14 @@ export function ContactSection() {
     <section id="contacto" className="bg-[#0B0D0E] px-4 py-24 sm:px-6 md:px-12 md:py-32">
       <div ref={headRef} className="mb-14 max-w-2xl">
         <p className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-label mb-3 text-[11px] tracking-[0.28em] text-[#FFD64B] uppercase`}>
-          Contacto
+          {t('contact.kicker')}
         </p>
         <div className={`rule mb-5 w-24 ${headRevealed ? 'animate-draw-line' : ''}`} style={{ animationDelay: '120ms' }} />
         <h2
           className={`${headRevealed ? 'animate-blur-fade-up' : 'opacity-0'} font-display text-3xl leading-[1.1] tracking-[-0.01em] text-[#E5E7EB] sm:text-4xl md:text-5xl`}
           style={{ animationDelay: '200ms' }}
         >
-          Escríbenos. <span className="text-[#FFD64B]">Respondemos a cualquier hora.</span>
+          {t('contact.title')}{TITLE_GAP}<span className="text-[#FFD64B]">{t('contact.titleHighlight')}</span>
         </h2>
       </div>
 
@@ -71,11 +71,11 @@ export function ContactSection() {
                           {phone}
                         </a>
                         <a
-                          href={waHref(phone, WHATSAPP_MESSAGE)}
+                          href={waHref(phone, t('whatsapp.message'))}
                           target="_blank"
                           rel="noreferrer"
-                          aria-label={`Escribir por WhatsApp al ${phone}`}
-                          title="Escribir por WhatsApp"
+                          aria-label={t('contact.whatsappAria', { phone })}
+                          title={t('contact.whatsappTitle')}
                           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#FFD64B]/30 text-[#FFD64B] transition-colors hover:bg-[#FFD64B] hover:text-[#0B0D0E]"
                         >
                           <WhatsAppGlyph size={16} />
@@ -98,7 +98,7 @@ export function ContactSection() {
         href={`mailto:${COMPANY.email}`}
         className="font-label mt-12 inline-flex items-center gap-2 rounded-full bg-[#FFD64B] px-7 py-3 tracking-[0.04em] text-[#0B0D0E]"
       >
-        Solicitar tu servicio
+        {t('contact.cta')}
         <ArrowRight size={16} />
       </a>
     </section>

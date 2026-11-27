@@ -10,8 +10,11 @@
 // e impórtalo arriba de src/components/ClientsSection.jsx (ver el comentario ahí).
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { content } from '../i18n/index.js';
+
 // icon: nombre del ícono de lucide-react (ver src/components/ClientsSection.jsx).
-export const CLIENT_TYPES = [
+// Traducciones: src/i18n/locales/<idioma>.js → clientTypes (mismo orden).
+export const CLIENT_TYPES = content('clientTypes', [
   {
     icon: 'Landmark',
     title: 'Embajadas y misiones diplomáticas',
@@ -42,7 +45,7 @@ export const CLIENT_TYPES = [
     title: 'Viajeros y familias',
     text: 'Turistas y particulares: aeropuerto, tours y viajes fuera de Lima.',
   },
-];
+]);
 
 // initials: se muestran en un círculo dorado mientras no haya logo.
 export const CLIENTS = [

@@ -1,6 +1,7 @@
 import { Landmark, Globe, Plane, Building2, GraduationCap, Users, Briefcase } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
 import { CLIENT_TYPES, CLIENTS } from '../content/clients';
+import { t } from '../i18n';
 
 const ICONS = { Landmark, Globe, Plane, Building2, GraduationCap, Users, Briefcase };
 
@@ -32,10 +33,10 @@ export function ClientsGrid() {
   return (
     <div id="clientes" className="scroll-mt-24">
       <h3 className="font-display mb-2 text-2xl tracking-[-0.01em] text-[#E5E7EB] sm:text-3xl">
-        Nos eligen quienes exigen más.
+        {t('clients.title')}
       </h3>
       <p className="mb-8 max-w-md text-base text-[#E5E7EB]/60">
-        Estos son algunos de los sectores que ya confiaron en nosotros.
+        {t('clients.intro')}
       </p>
 
       <ul

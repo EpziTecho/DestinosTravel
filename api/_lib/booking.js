@@ -15,6 +15,7 @@ import {
   isTooSoon,
   isPastTime,
   SHORT_NOTICE_NOTE,
+  CLIENT_LANGUAGES,
 } from '../../src/config/bookingServices.js';
 
 const MAX_LEN = { from: 200, to: 200, flight: 20, name: 100, email: 150, phone: 30, notes: 1000 };
@@ -83,6 +84,8 @@ export function validateBooking(body) {
       travel: travelSummary(service, { passengers, bags, handBags }),
       routeLabels: service.fieldLabels ?? null,
       notice: shortNotice ? SHORT_NOTICE_NOTE : '',
+      // Website language the customer used (empty for Spanish, the default).
+      language: b.lang && b.lang !== 'es' ? (CLIENT_LANGUAGES[b.lang] ?? '') : '',
       ...fields,
     },
   };
@@ -109,6 +112,7 @@ export function bookingRows(b) {
     ['Correo', b.email],
     ['Teléfono', b.phone],
     ['Notas', b.notes],
+    ['Idioma del cliente', b.language],
     ['Aviso', b.notice],
   ].filter(([, v]) => v);
 }
