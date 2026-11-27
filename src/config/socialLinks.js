@@ -1,5 +1,4 @@
 // Centralized so every social URL can be swapped from one place.
-// Replace the '#' placeholders with the real profile URLs when ready.
 import { t } from '../i18n';
 
 // Main number: floating button, "Reservar por WhatsApp", "Comunícate con un operador" and Empresas.
@@ -12,7 +11,7 @@ export const OPERATOR_MESSAGE = t('whatsapp.operatorMessage');
 
 export const SOCIAL_LINKS = {
   facebook: 'https://www.facebook.com/destinostravel5eirl',
-  instagram: '#',
+  instagram: 'https://www.instagram.com/destinostravel5eirl/',
   whatsapp: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`,
   tiktok: 'https://www.tiktok.com/@destinostravel5eirl',
 };

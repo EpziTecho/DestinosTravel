@@ -79,7 +79,7 @@ public/
 |---|---|
 | Mensaje predeterminado de WhatsApp | `src/config/socialLinks.js` → `WHATSAPP_MESSAGE` |
 | Número de WhatsApp | `src/config/socialLinks.js` → `WHATSAPP_NUMBER` |
-| URLs de Facebook / Instagram / TikTok | `src/config/socialLinks.js` → `SOCIAL_LINKS` (hoy son `'#'` placeholders) |
+| URLs de Facebook / Instagram / TikTok | `src/config/socialLinks.js` → `SOCIAL_LINKS` |
 | Clientes (categorías y clientes con nombre) | `src/content/clients.js` → `CLIENT_TYPES` y `CLIENTS` (solo se muestran los que tengan `authorized: true`) |
 | Textos de Misión / Visión / Nosotros / Servicios | `src/components/CinematicScroll.jsx`, componentes `<Beat />` |
 | Video de fondo | `src/assets/hero.mp4` + `src/assets/hero-poster.webp` (primer cuadro, se ve mientras carga). En celulares el video se reproduce en bucle; en computadoras avanza con el scroll |
@@ -113,7 +113,6 @@ npm run preview  # sirve el build de producción localmente
 
 ## Pendientes conocidos
 
-- Reemplazar los placeholders `'#'` de Facebook/Instagram/TikTok en `socialLinks.js` cuando existan esas cuentas
 - Reemplazar las insignias de iniciales en `ClientsSection.jsx` por los logos PNG reales de cada cliente
 - Las páginas internas (`/preguntas-frecuentes`, `/terminos`) funcionan gracias a `vercel.json` (rewrite a `index.html`)
 - Si se compra un dominio propio (en vez de `destinos-travel5.vercel.app`), actualizar la URL en: `index.html` (canonical, Open Graph, Twitter, JSON-LD), `src/lib/nav.js` (`SITE`), `public/robots.txt`, `public/sitemap.xml`, y conectar el dominio en Vercel → Settings → Domains
